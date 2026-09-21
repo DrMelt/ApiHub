@@ -17,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.AI" />
     <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
+    <PackageReference Include="MinVer" PrivateAssets="all" />
     <PackageReference Include="OpenAI" />
   </ItemGroup>
 
