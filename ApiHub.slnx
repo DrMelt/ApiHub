@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="ApiHub/ApiHub.csproj" />
+  <Project Path="ApiHub.ChatClient/ApiHub.ChatClient.csproj" />
+  <Project Path="ApiHub.Json/ApiHub.Json.csproj" />
+  <Project Path="Tests/ApiHub.ChatClient.Tests/ApiHub.ChatClient.Tests.csproj" />
+  <Project Path="Tests/ApiHub.Json.Tests/ApiHub.Json.Tests.csproj" />
+  <Project Path="Tests/ApiHub.Tests/ApiHub.Tests.csproj" />
+  <Project Path="Tests/ApiHub.Tests.Shared/ApiHub.Tests.Shared.csproj" />
+</Solution>

@@ -1,22 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>ApiHub</RootNamespace>
     <IsAotCompatible>true</IsAotCompatible>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-    <PackageId>APIHub</PackageId>
+    <PackageId>ApiHub.ChatClient</PackageId>
     <Authors>Dreamin Melt</Authors>
-    <Description>LLM 提供商与模型目录的数据模型与校验。</Description>
+    <Description>由提供商定义建立 OpenAI 兼容客户端的扩展。</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/DrMelt/APIHub</RepositoryUrl>
+    <RepositoryUrl>https://github.com/DrMelt/ApiHub</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ErrorOr" />
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
     <PackageReference Include="MinVer" PrivateAssets="all" />
+    <PackageReference Include="OpenAI" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApiHub\ApiHub.csproj" />
   </ItemGroup>
 
   <ItemGroup>

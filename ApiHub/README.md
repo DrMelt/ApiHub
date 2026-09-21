@@ -1,4 +1,4 @@
-# APIHub
+# ApiHub
 
 LLM 提供商与模型目录的数据模型与校验。字段与定义构造、目录改动通过 [ErrorOr](https://www.nuget.org/packages/ErrorOr) 返回错误，不抛异常。
 

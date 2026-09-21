@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>ApiHub.Tests.Shared</RootNamespace>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -11,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\APIHub\APIHub.csproj" />
+    <ProjectReference Include="..\..\ApiHub\ApiHub.csproj" />
   </ItemGroup>
 
   <ItemGroup>

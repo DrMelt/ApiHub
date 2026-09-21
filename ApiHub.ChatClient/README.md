@@ -1,6 +1,6 @@
-# APIHub.ChatClient
+# ApiHub.ChatClient
 
-APIHub 的扩展包：由提供商定义建立 OpenAI 兼容客户端。提供商与模型的目录数据模型见 [APIHub](https://github.com/DrMelt/APIHub)。
+ApiHub 的扩展包：由提供商定义建立 OpenAI 兼容客户端。提供商与模型的目录数据模型见 [ApiHub](https://github.com/DrMelt/ApiHub)。
 
 ## 用法
 

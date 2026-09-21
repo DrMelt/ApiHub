@@ -1,6 +1,6 @@
-# APIHub.Json
+# ApiHub.Json
 
-APIHub 的扩展包：把目录内容与 JSON 文本互转，用于落盘与加载。提供商与模型的数据模型见 [APIHub](https://github.com/DrMelt/APIHub)。
+ApiHub 的扩展包：把目录内容与 JSON 文本互转，用于落盘与加载。提供商与模型的数据模型见 [ApiHub](https://github.com/DrMelt/ApiHub)。
 
 ## 用法
 
@@ -13,7 +13,7 @@ CatalogContents contents = CatalogJson.Parse(json).Value; // Value 只在 IsErro
 Catalog rebuilt = new(contents);
 ```
 
-`catalog.Contents` 导出快照，`CatalogJson.Parse` 读回内容，`Catalog` 构造函数由内容装配目录。字段校验沿用 [APIHub](https://github.com/DrMelt/APIHub) 的解析口，字段全部合法后再校验集合自一致性，不合法时以 [ErrorOr](https://www.nuget.org/packages/ErrorOr) 报出错误，不抛异常。
+`catalog.Contents` 导出快照，`CatalogJson.Parse` 读回内容，`Catalog` 构造函数由内容装配目录。字段校验沿用 [ApiHub](https://github.com/DrMelt/ApiHub) 的解析口，字段全部合法后再校验集合自一致性，不合法时以 [ErrorOr](https://www.nuget.org/packages/ErrorOr) 报出错误，不抛异常。
 
 ## 格式
 

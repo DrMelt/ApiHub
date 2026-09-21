@@ -1,20 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>ApiHub.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ErrorOr" />
+    <PackageReference Include="Microsoft.Extensions.AI" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\APIHub\APIHub.csproj" />
-    <ProjectReference Include="..\APIHub.Tests.Shared\APIHub.Tests.Shared.csproj" />
+    <ProjectReference Include="..\..\ApiHub\ApiHub.csproj" />
+    <ProjectReference Include="..\..\ApiHub.ChatClient\ApiHub.ChatClient.csproj" />
+    <ProjectReference Include="..\ApiHub.Tests.Shared\ApiHub.Tests.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
