@@ -14,7 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\ApiHub\ApiHub.csproj" />
     <ProjectReference Include="..\..\ApiHub.ChatClient\ApiHub.ChatClient.csproj" />
-    <ProjectReference Include="..\ApiHub.Tests.Shared\ApiHub.Tests.Shared.csproj" />
+    <ProjectReference Include="..\ApiHub.Tests.Fixture\ApiHub.Tests.Fixture.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
 using ErrorOr;
 
-namespace ApiHub.Models;
+namespace ApiHub.Shared.Models;
 
 /// <summary>OpenAI 兼容端点：http 或 https 的绝对地址。地址按 Uri 规范化，文本形式可能与输入不同。</summary>
 public sealed record ProviderEndpoint {

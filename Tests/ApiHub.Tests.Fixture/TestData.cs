@@ -1,7 +1,8 @@
-using ApiHub.Models;
+using ApiHub.Shared.Models;
 using ErrorOr;
+using Models = ApiHub.Shared.Models;
 
-namespace ApiHub.Tests.Shared;
+namespace ApiHub.Tests.Fixture;
 
 /// <summary>测试用合法对象的构造口。</summary>
 public static class TestData {

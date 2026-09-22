@@ -1,6 +1,6 @@
 using ErrorOr;
 
-namespace ApiHub.Models;
+namespace ApiHub.Shared.Models;
 
 /// <summary>模型名，直接作为请求的模型参数，不接受空或空白。相等与哈希按大小写敏感判定。</summary>
 public sealed record ModelName {

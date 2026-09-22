@@ -1,4 +1,4 @@
-namespace ApiHub.Models;
+namespace ApiHub.Shared.Models;
 
 /// <summary>一个提供商：OpenAI 兼容端点与接入凭据。</summary>
 public sealed record ProviderDefinition {

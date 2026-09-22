@@ -1,7 +1,7 @@
-using ApiHub.Models;
+using ApiHub.Shared.Models;
 using ErrorOr;
 
-namespace ApiHub.Tests.Models;
+namespace ApiHub.Shared.Tests.Models;
 
 public class ProviderNameTests {
     [Theory]

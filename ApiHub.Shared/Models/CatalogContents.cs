@@ -1,7 +1,8 @@
+using ApiHub.Shared.Catalogs;
 using System.Collections.Immutable;
 using ErrorOr;
 
-namespace ApiHub.Models;
+namespace ApiHub.Shared.Models;
 
 /// <summary>目录内容：提供商与模型集合。集合内自一致：名唯一，模型指向的提供商在集合中。成员不可变，交出后不被目录的后续变更影响。</summary>
 public sealed class CatalogContents {
@@ -34,17 +35,17 @@ public sealed class CatalogContents {
 
         foreach (ProviderDefinition provider in providers) {
             if (!providerNames.Add(provider.ProviderName)) {
-                errors.Add(DuplicateProviderError(provider.ProviderName));
+                errors.Add(CatalogErrors.DuplicateProvider(provider.ProviderName));
             }
         }
 
         foreach (ModelDefinition model in models) {
             if (!modelNames.Add(model.ModelName)) {
-                errors.Add(DuplicateModelError(model.ModelName));
+                errors.Add(CatalogErrors.DuplicateModel(model.ModelName));
             }
 
             if (!providerNames.Contains(model.ProviderName)) {
-                errors.Add(DanglingReferenceError(model.ProviderName));
+                errors.Add(CatalogErrors.ProviderNotFound(model.ProviderName));
             }
         }
 
@@ -54,22 +55,4 @@ public sealed class CatalogContents {
 
         return new CatalogContents(providers, models);
     }
-
-    /// <summary>由已保证集合内自一致的集合构成内容，不做校验。供程序集内可信路径使用。</summary>
-    internal static CatalogContents FromValid(
-        ImmutableArray<ProviderDefinition> providers,
-        ImmutableArray<ModelDefinition> models) =>
-        new(providers, models);
-
-    /// <summary>提供商名重复的冲突错误。</summary>
-    internal static Error DuplicateProviderError(ProviderName providerName) =>
-        Error.Conflict("Catalog.ProviderAlreadyExists", $"提供商 {providerName.Value} 已存在。");
-
-    /// <summary>模型名重复的冲突错误。</summary>
-    internal static Error DuplicateModelError(ModelName modelName) =>
-        Error.Conflict("Catalog.ModelAlreadyExists", $"模型 {modelName.Value} 已存在。");
-
-    /// <summary>模型引用不存在提供商的未找到错误。</summary>
-    internal static Error DanglingReferenceError(ProviderName providerName) =>
-        Error.NotFound("Catalog.ProviderNotFound", $"目录中没有提供商 {providerName.Value}。");
 }

@@ -1,6 +1,6 @@
 using ErrorOr;
 
-namespace ApiHub.Models;
+namespace ApiHub.Shared.Models;
 
 /// <summary>接入凭据，不接受空或空白。文本形式为掩码，不暴露凭据原文。</summary>
 public sealed record ApiKey {

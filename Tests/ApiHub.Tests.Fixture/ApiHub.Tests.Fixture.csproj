@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ApiHub\ApiHub.csproj" />
+    <ProjectReference Include="..\..\ApiHub.Shared\ApiHub.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

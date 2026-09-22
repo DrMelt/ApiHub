@@ -6,7 +6,7 @@
 
     <PackageId>ApiHub</PackageId>
     <Authors>Dreamin Melt</Authors>
-    <Description>LLM 提供商与模型目录的数据模型与校验。</Description>
+    <Description>LLM 提供商与模型目录的内存实现。</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/DrMelt/ApiHub</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="ErrorOr" />
     <PackageReference Include="MinVer" PrivateAssets="all" />
+    <ProjectReference Include="..\ApiHub.Shared\ApiHub.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

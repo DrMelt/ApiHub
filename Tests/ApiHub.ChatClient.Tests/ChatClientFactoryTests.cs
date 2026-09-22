@@ -1,7 +1,8 @@
 using ApiHub.Catalogs;
 using ApiHub.ChatClient;
-using ApiHub.Models;
-using ApiHub.Tests.Shared;
+using ApiHub.Shared.Catalogs;
+using ApiHub.Shared.Models;
+using ApiHub.Tests.Fixture;
 using Microsoft.Extensions.AI;
 
 namespace ApiHub.ChatClient.Tests;

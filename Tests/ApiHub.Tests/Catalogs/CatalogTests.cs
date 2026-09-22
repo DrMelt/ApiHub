@@ -1,6 +1,7 @@
 using ApiHub.Catalogs;
-using ApiHub.Models;
-using ApiHub.Tests.Shared;
+using ApiHub.Shared.Catalogs;
+using ApiHub.Shared.Models;
+using ApiHub.Tests.Fixture;
 using ErrorOr;
 using System.Collections.Immutable;
 
@@ -370,5 +371,17 @@ public class CatalogTests {
         Assert.False(catalog.AddProvider(TestData.Provider("local", "https://example.com/v1", "sk-2")).IsError);
 
         Assert.Equal(2, providers.Count);
+    }
+
+    [Fact]
+    public void 内存目录可作为读写契约使用() {
+        Catalog catalog = new();
+
+        Assert.False(catalog.AddProvider(TestData.Provider("dashscope")).IsError);
+        Assert.False(catalog.AddModel(TestData.Model("qwen-plus")).IsError);
+
+        Assert.Equal("dashscope", catalog.FindModel(TestData.ModelName("qwen-plus"))!.ProviderName.Value);
+        Assert.Equal("k", catalog.FindModelConnection(TestData.ModelName("qwen-plus"))!.ApiKey.Value);
+        Assert.Single(catalog.Contents.Providers);
     }
 }

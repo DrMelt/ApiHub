@@ -1,4 +1,4 @@
-namespace ApiHub.Models;
+namespace ApiHub.Shared.Models;
 
 /// <summary>模型定义：模型名及其提供商归属。</summary>
 public sealed record ModelDefinition {

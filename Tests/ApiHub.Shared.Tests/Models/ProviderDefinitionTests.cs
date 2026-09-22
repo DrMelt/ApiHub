@@ -1,7 +1,7 @@
-using ApiHub.Models;
-using ApiHub.Tests.Shared;
+using ApiHub.Shared.Models;
+using ApiHub.Tests.Fixture;
 
-namespace ApiHub.Tests.Models;
+namespace ApiHub.Shared.Tests.Models;
 
 public class ProviderDefinitionTests {
     [Fact]

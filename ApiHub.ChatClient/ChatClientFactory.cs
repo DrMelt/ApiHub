@@ -1,4 +1,4 @@
-using ApiHub.Models;
+using ApiHub.Shared.Models;
 using Microsoft.Extensions.AI;
 using OpenAI;
 using System.ClientModel;

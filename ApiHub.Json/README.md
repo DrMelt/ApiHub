@@ -1,19 +1,20 @@
 # ApiHub.Json
 
-ApiHub 的扩展包：把目录内容与 JSON 文本互转，用于落盘与加载。提供商与模型的数据模型见 [ApiHub](https://github.com/DrMelt/ApiHub)。
+ApiHub 的扩展包：把目录内容与 JSON 文本互转，用于落盘与加载。数据对象与目录契约见 [ApiHub.Shared](https://github.com/DrMelt/ApiHub/tree/main/ApiHub.Shared)。
 
 ## 用法
 
 ```csharp
 using ApiHub.Catalogs;
 using ApiHub.Json;
+using ApiHub.Shared.Models;
 
 string json = catalog.Contents.ToJson();
 CatalogContents contents = CatalogJson.Parse(json).Value; // Value 只在 IsError 为 false 时取用
 Catalog rebuilt = new(contents);
 ```
 
-`catalog.Contents` 导出快照，`CatalogJson.Parse` 读回内容，`Catalog` 构造函数由内容装配目录。字段校验沿用 [ApiHub](https://github.com/DrMelt/ApiHub) 的解析口，字段全部合法后再校验集合自一致性，不合法时以 [ErrorOr](https://www.nuget.org/packages/ErrorOr) 报出错误，不抛异常。
+`catalog.Contents` 导出快照，`CatalogJson.Parse` 读回内容，`Catalog` 构造函数由内容装配目录。字段校验沿用 [ApiHub.Shared](https://github.com/DrMelt/ApiHub/tree/main/ApiHub.Shared) 的解析口，字段全部合法后再校验集合自一致性，不合法时以 [ErrorOr](https://www.nuget.org/packages/ErrorOr) 报出错误，不抛异常。本包只依赖 `ApiHub.Shared`，示例中的 `Catalog` 来自实现包 `ApiHub`。
 
 ## 格式
 

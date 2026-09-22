@@ -1,7 +1,7 @@
 using ApiHub.Catalogs;
 using ApiHub.Json;
-using ApiHub.Models;
-using ApiHub.Tests.Shared;
+using ApiHub.Shared.Models;
+using ApiHub.Tests.Fixture;
 using ErrorOr;
 using System.Text.Json;
 

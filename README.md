@@ -4,7 +4,8 @@ LLM 提供商与模型目录相关的 .NET 包。
 
 ## 包
 
-- [`ApiHub`](https://github.com/DrMelt/ApiHub/tree/main/ApiHub) 提供商与模型目录的数据模型与校验。
+- [`ApiHub.Shared`](https://github.com/DrMelt/ApiHub/tree/main/ApiHub.Shared) 提供商与模型目录的数据对象与契约。
+- [`ApiHub`](https://github.com/DrMelt/ApiHub/tree/main/ApiHub) 目录的内存实现。
 - [`ApiHub.ChatClient`](https://github.com/DrMelt/ApiHub/tree/main/ApiHub.ChatClient) 由提供商定义建立 OpenAI 兼容客户端。
 - [`ApiHub.Json`](https://github.com/DrMelt/ApiHub/tree/main/ApiHub.Json) 目录内容与 JSON 文本的互转。
 

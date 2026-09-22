@@ -1,6 +1,6 @@
 using ErrorOr;
 
-namespace ApiHub.Models;
+namespace ApiHub.Shared.Models;
 
 /// <summary>提供商名，不接受空或空白，内容不限。相等与哈希按不区分大小写判定，目录据此唯一索引提供商。</summary>
 public sealed record ProviderName {

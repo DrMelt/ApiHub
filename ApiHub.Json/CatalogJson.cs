@@ -1,4 +1,4 @@
-using ApiHub.Models;
+using ApiHub.Shared.Models;
 using ErrorOr;
 using System.Text.Json;
 

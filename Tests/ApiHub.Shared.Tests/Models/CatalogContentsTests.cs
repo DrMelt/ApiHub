@@ -1,8 +1,8 @@
-using ApiHub.Models;
-using ApiHub.Tests.Shared;
+using ApiHub.Shared.Models;
+using ApiHub.Tests.Fixture;
 using ErrorOr;
 
-namespace ApiHub.Tests.Models;
+namespace ApiHub.Shared.Tests.Models;
 
 public class CatalogContentsTests {
     [Fact]
