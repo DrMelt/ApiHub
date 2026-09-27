@@ -1,6 +1,6 @@
 namespace ApiHub.Shared.Models;
 
-/// <summary>模型定义：模型名及其提供商归属。</summary>
+/// <summary>模型定义：模型名、提供商归属与上下文窗口长度。</summary>
 public sealed record ModelDefinition {
     /// <summary>模型名，直接作为请求的模型参数。</summary>
     public required ModelName ModelName {
@@ -12,10 +12,16 @@ public sealed record ModelDefinition {
         get; init;
     }
 
+    /// <summary>模型上下文窗口长度。</summary>
+    public required ModelContextLength ContextLength {
+        get; init;
+    }
+
     /// <summary>由字段构成定义。字段自身的合法性由各类型对象的解析口保证。</summary>
-    public static ModelDefinition Create(ModelName modelName, ProviderName providerName) =>
+    public static ModelDefinition Create(ModelName modelName, ProviderName providerName, ModelContextLength contextLength) =>
         new() {
             ModelName = modelName,
-            ProviderName = providerName
+            ProviderName = providerName,
+            ContextLength = contextLength
         };
 }

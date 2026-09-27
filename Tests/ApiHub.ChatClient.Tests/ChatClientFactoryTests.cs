@@ -34,4 +34,18 @@ public class ChatClientFactoryTests {
 
         Assert.Equal("qwen3", metadata.DefaultModelId);
     }
+
+    [Fact]
+    public void 由连接取得的客户端可经GetService取回模型上下文() {
+        Catalog catalog = new(TestData.Contents(
+            [TestData.Provider("local", BaseAddress, "ollama")],
+            [TestData.Model("qwen3", "local", contextLength: 8192)]));
+
+        IChatClient client = catalog.FindModelConnection(TestData.ModelName("qwen3"))!.CreateChatClient();
+
+        ModelContextLength? contextLength = client.GetService<ModelContextLength>();
+
+        Assert.NotNull(contextLength);
+        Assert.Equal(8192, contextLength.Value);
+    }
 }

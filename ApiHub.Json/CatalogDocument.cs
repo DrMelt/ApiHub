@@ -42,4 +42,9 @@ internal sealed record ModelDocument {
     public string? ProviderName {
         get; init;
     }
+
+    /// <summary>模型上下文窗口长度原文，缺失时视为非法。</summary>
+    public int? ContextLength {
+        get; init;
+    }
 }

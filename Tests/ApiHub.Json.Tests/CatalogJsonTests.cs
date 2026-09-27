@@ -36,6 +36,7 @@ public class CatalogJsonTests {
         Assert.Equal("dashscope", model.ProviderName.Value);
         Assert.Equal("sk-1", rebuilt.FindProvider(model.ProviderName)!.ApiKey.Value);
         Assert.Equal("https://example.com/v1", rebuilt.FindProvider(model.ProviderName)!.BaseAddress.Address.ToString());
+        Assert.Equal(32768, model.ContextLength.Value);
     }
 
     [Fact]
@@ -63,6 +64,7 @@ public class CatalogJsonTests {
 
         Assert.Equal("qwen-max", model.GetProperty("modelName").GetString());
         Assert.Equal("dashscope", model.GetProperty("providerName").GetString());
+        Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
@@ -107,7 +109,7 @@ public class CatalogJsonTests {
                 { "ProviderName": "dashscope", "BaseAddress": "https://example.com/v1", "ApiKey": "sk-1" }
               ],
               "Models": [
-                { "ModelName": "qwen-plus", "ProviderName": "dashscope" }
+                { "ModelName": "qwen-plus", "ProviderName": "dashscope", "ContextLength": 32768 }
               ]
             }
             """));
@@ -200,7 +202,7 @@ public class CatalogJsonTests {
             {
               "providers": [],
               "models": [
-                { "modelName": "", "providerName": "dashscope" }
+                { "modelName": "", "providerName": "dashscope", "contextLength": 32768 }
               ]
             }
             """);
@@ -248,7 +250,7 @@ public class CatalogJsonTests {
                 { "providerName": "dashscope", "baseAddress": "ftp://example.com", "apiKey": "" }
               ],
               "models": [
-                { "modelName": "qwen-plus", "providerName": "" }
+                { "modelName": "qwen-plus", "providerName": "", "contextLength": 32768 }
               ]
             }
             """);
@@ -268,7 +270,7 @@ public class CatalogJsonTests {
                 { "providerName": "dashscope", "baseAddress": "ftp://example.com", "apiKey": "sk" }
               ],
               "models": [
-                { "modelName": "qwen-plus", "providerName": "dashscope" }
+                { "modelName": "qwen-plus", "providerName": "dashscope", "contextLength": 32768 }
               ]
             }
             """);
@@ -312,8 +314,8 @@ public class CatalogJsonTests {
                 { "providerName": "dashscope", "baseAddress": "https://example.com/v1", "apiKey": "sk" }
               ],
               "models": [
-                { "modelName": "qwen-plus", "providerName": "dashscope" },
-                { "modelName": "qwen-plus", "providerName": "dashscope" }
+                { "modelName": "qwen-plus", "providerName": "dashscope", "contextLength": 32768 },
+                { "modelName": "qwen-plus", "providerName": "dashscope", "contextLength": 32768 }
               ]
             }
             """);
@@ -330,12 +332,53 @@ public class CatalogJsonTests {
                 { "providerName": "dashscope", "baseAddress": "https://example.com/v1", "apiKey": "sk" }
               ],
               "models": [
-                { "modelName": "qwen-plus", "providerName": "missing" }
+                { "modelName": "qwen-plus", "providerName": "missing", "contextLength": 32768 }
               ]
             }
             """);
 
         Assert.True(result.IsError);
         Assert.Equal("Catalog.ProviderNotFound", result.FirstError.Code);
+    }
+
+    [Fact]
+    public void 上下文长度往返保留() {
+        Catalog catalog = new(TestData.Contents(
+            [TestData.Provider("dashscope")],
+            [TestData.Model("qwen-plus", contextLength: 8192)]));
+
+        Catalog rebuilt = new(TestData.Ok(CatalogJson.Parse(catalog.Contents.ToJson())));
+
+        Assert.Equal(8192, rebuilt.FindModel(TestData.ModelName("qwen-plus"))!.ContextLength.Value);
+    }
+
+    [Fact]
+    public void 模型上下文缺失被拒() {
+        ErrorOr<CatalogContents> result = CatalogJson.Parse("""
+            {
+              "providers": [],
+              "models": [
+                { "modelName": "qwen-plus", "providerName": "dashscope" }
+              ]
+            }
+            """);
+
+        Assert.True(result.IsError);
+        Assert.Equal("ModelContextLength.Invalid", result.FirstError.Code);
+    }
+
+    [Fact]
+    public void 模型上下文非正被拒() {
+        ErrorOr<CatalogContents> result = CatalogJson.Parse("""
+            {
+              "providers": [],
+              "models": [
+                { "modelName": "qwen-plus", "providerName": "dashscope", "contextLength": 0 }
+              ]
+            }
+            """);
+
+        Assert.True(result.IsError);
+        Assert.Equal("ModelContextLength.Invalid", result.FirstError.Code);
     }
 }

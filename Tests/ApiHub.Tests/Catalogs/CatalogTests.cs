@@ -59,6 +59,7 @@ public class CatalogTests {
         Assert.Equal("dashscope", connection.ProviderName.Value);
         Assert.Equal("https://example.com/v1", connection.BaseAddress.Address.ToString());
         Assert.Equal("sk-1", connection.ApiKey.Value);
+        Assert.Equal(32768, connection.ContextLength.Value);
     }
 
     [Fact]
@@ -321,7 +322,8 @@ public class CatalogTests {
                     .Then(endpoint => catalog.AddProvider(ProviderDefinition.Create(providerName, endpoint, key)))));
         ErrorOr<Success> registered = ProviderName.Create("dashscope")
             .Then(providerName => ModelName.Create("qwen-plus")
-                .Then(modelName => catalog.AddModel(ModelDefinition.Create(modelName, providerName))));
+                .Then(modelName => ModelContextLength.Create(32768)
+                    .Then(contextLength => catalog.AddModel(ModelDefinition.Create(modelName, providerName, contextLength)))));
 
         ModelDefinition? model = catalog.FindModel(TestData.ModelName("qwen-plus"));
         ProviderDefinition? provider = model is null ? null : catalog.FindProvider(model.ProviderName);

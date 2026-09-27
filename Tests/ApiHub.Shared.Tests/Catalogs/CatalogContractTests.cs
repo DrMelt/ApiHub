@@ -35,6 +35,7 @@ public class CatalogContractTests {
         Assert.Equal("dashscope", connection.ProviderName.Value);
         Assert.Equal("https://example.com/v1", connection.BaseAddress.Address.ToString());
         Assert.Equal("sk-1", connection.ApiKey.Value);
+        Assert.Equal(32768, connection.ContextLength.Value);
     }
 
     [Fact]
@@ -57,5 +58,6 @@ public class CatalogContractTests {
 
         Assert.Equal("qwen-plus", connection.ModelName.Value);
         Assert.Equal("sk-1", connection.ApiKey.Value);
+        Assert.Equal(32768, connection.ContextLength.Value);
     }
 }

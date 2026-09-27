@@ -1,12 +1,13 @@
 namespace ApiHub.Shared.Models;
 
-/// <summary>模型连接信息：模型名与接入所需的提供商名、端点、凭据。通常由目录按模型名解析得到。</summary>
+/// <summary>模型连接信息：模型名与接入所需的提供商名、端点、凭据及模型上下文。通常由目录按模型名解析得到。</summary>
 public sealed record ModelConnection {
     private ModelConnection(ModelDefinition model, ProviderDefinition provider) {
         ModelName = model.ModelName;
         ProviderName = provider.ProviderName;
         BaseAddress = provider.BaseAddress;
         ApiKey = provider.ApiKey;
+        ContextLength = model.ContextLength;
     }
 
     /// <summary>模型名，直接作为请求的模型参数。</summary>
@@ -26,6 +27,11 @@ public sealed record ModelConnection {
 
     /// <summary>接入凭据。</summary>
     public ApiKey ApiKey {
+        get;
+    }
+
+    /// <summary>模型上下文窗口长度。</summary>
+    public ModelContextLength ContextLength {
         get;
     }
 

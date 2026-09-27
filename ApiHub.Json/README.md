@@ -24,12 +24,12 @@ Catalog rebuilt = new(contents);
     { "providerName": "dashscope", "baseAddress": "https://dashscope.aliyuncs.com/compatible-mode/v1", "apiKey": "sk-..." }
   ],
   "models": [
-    { "modelName": "qwen-plus", "providerName": "dashscope" }
+    { "modelName": "qwen-plus", "providerName": "dashscope", "contextLength": 32768 }
   ]
 }
 ```
 
-读取时键名大小写不敏感，集合缺失或为 null 视为空集合，列表项或字段为 null 视为非法，未知属性忽略，因此旧版本可读新增字段的文件。导出时提供商与模型按名序数排序，端点按 `Uri` 规范化，文本形式可能与输入不同。
+读取时键名大小写不敏感，集合缺失或为 null 视为空集合，列表项或字段为 null 视为非法，未知属性忽略，因此旧版本可读新增字段的文件。模型必须给出大于 0 的 `contextLength`，缺失或非法时拒绝。导出时提供商与模型按名序数排序，端点按 `Uri` 规范化，文本形式可能与输入不同。
 
 凭据以明文写入，落盘文件的访问权限由调用方控制。
 

@@ -22,7 +22,8 @@ public static class CatalogJson {
                 .OrderBy(model => model.ModelName.Value, StringComparer.Ordinal)
                 .Select(model => new ModelDocument {
                     ModelName = model.ModelName.Value,
-                    ProviderName = model.ProviderName.Value
+                    ProviderName = model.ProviderName.Value,
+                    ContextLength = model.ContextLength.Value
                 })]
         };
 
@@ -78,14 +79,16 @@ public static class CatalogJson {
 
             ErrorOr<ModelName> modelName = ModelName.Create(item.ModelName ?? "");
             ErrorOr<ProviderName> providerName = ProviderName.Create(item.ProviderName ?? "");
+            ErrorOr<ModelContextLength> contextLength = ModelContextLength.Create(item.ContextLength ?? 0);
             AddErrors(modelName, errors);
             AddErrors(providerName, errors);
+            AddErrors(contextLength, errors);
 
-            if (modelName.IsError || providerName.IsError) {
+            if (modelName.IsError || providerName.IsError || contextLength.IsError) {
                 continue;
             }
 
-            models.Add(ModelDefinition.Create(modelName.Value, providerName.Value));
+            models.Add(ModelDefinition.Create(modelName.Value, providerName.Value, contextLength.Value));
         }
 
         if (errors.Count > 0) {

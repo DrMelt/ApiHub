@@ -26,8 +26,10 @@ public static class TestData {
         string apiKey = "k") =>
         ProviderDefinition.Create(ProviderName(providerName), Endpoint(baseAddress), Key(apiKey));
 
-    public static ModelDefinition Model(string modelName, string providerName = "dashscope") =>
-        ModelDefinition.Create(ModelName(modelName), ProviderName(providerName));
+    public static ModelContextLength ContextLength(int value) => Ok(Models.ModelContextLength.Create(value));
+
+    public static ModelDefinition Model(string modelName, string providerName = "dashscope", int contextLength = 32768) =>
+        ModelDefinition.Create(ModelName(modelName), ProviderName(providerName), ContextLength(contextLength));
 
     public static CatalogContents Contents(ProviderDefinition[] providers, ModelDefinition[] models) =>
         Ok(CatalogContents.Create([.. providers], [.. models]));
