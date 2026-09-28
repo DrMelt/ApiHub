@@ -22,6 +22,6 @@ public interface IReadOnlyCatalog {
     /// <summary>按模型名查找模型，未命中返回 null。模型名按自身大小写精确匹配。</summary>
     ModelDefinition? FindModel(ModelName modelName);
 
-    /// <summary>按提供商名查找提供商，未命中返回 null。提供商名不区分大小写。</summary>
+    /// <summary>按提供商名查找提供商，未命中返回 null。提供商名按自身大小写精确匹配。</summary>
     ProviderDefinition? FindProvider(ProviderName providerName);
 }

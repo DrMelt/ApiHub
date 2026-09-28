@@ -39,8 +39,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 查找提供商名不区分大小写() {
-        Assert.NotNull(Sample().FindProvider(TestData.ProviderName("DASHSCOPE")));
+    public void 查找提供商名大小写敏感() {
+        Assert.Null(Sample().FindProvider(TestData.ProviderName("DASHSCOPE")));
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class CatalogTests {
     [Fact]
     public void 替换提供商后连接信息随新凭据() {
         Catalog catalog = Sample();
-        ProviderDefinition replacement = TestData.Provider("DashScope", "https://example.com/other", "sk-9");
+        ProviderDefinition replacement = TestData.Provider("dashscope", "https://example.com/other", "sk-9");
 
         Assert.False(catalog.ReplaceProvider(replacement).IsError);
 
@@ -127,14 +127,14 @@ public class CatalogTests {
         Catalog catalog = Sample();
         string[] providers = ProviderNames(catalog);
 
-        Assert.True(catalog.AddProvider(TestData.Provider("DashScope", "https://example.com/v1", "sk-2")).IsError);
+        Assert.True(catalog.AddProvider(TestData.Provider("dashscope", "https://example.com/v1", "sk-2")).IsError);
 
         Assert.Equal(providers, ProviderNames(catalog));
     }
 
     [Fact]
     public void 新增已存在的提供商被拒() {
-        ProviderDefinition provider = TestData.Provider("DashScope", "https://example.com/v1", "sk-1");
+        ProviderDefinition provider = TestData.Provider("dashscope", "https://example.com/v1", "sk-1");
 
         ErrorOr<Success> result = Sample().AddProvider(provider);
 
@@ -145,12 +145,12 @@ public class CatalogTests {
     [Fact]
     public void 替换提供商就地生效() {
         Catalog catalog = Sample();
-        ProviderDefinition replacement = TestData.Provider("DashScope", "https://example.com/other", "sk-9");
+        ProviderDefinition replacement = TestData.Provider("dashscope", "https://example.com/other", "sk-9");
 
         Assert.False(catalog.ReplaceProvider(replacement).IsError);
 
         Assert.Single(catalog.Providers);
-        Assert.Equal("sk-9", catalog.FindProvider(TestData.ProviderName("DashScope"))!.ApiKey.Value);
+        Assert.Equal("sk-9", catalog.FindProvider(TestData.ProviderName("dashscope"))!.ApiKey.Value);
     }
 
     [Fact]

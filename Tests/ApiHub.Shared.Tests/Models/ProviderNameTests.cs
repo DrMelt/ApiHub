@@ -27,12 +27,13 @@ public class ProviderNameTests {
     }
 
     [Fact]
-    public void 标识不区分大小写地相等() {
+    public void 标识大小写敏感地判定() {
         ProviderName lower = ProviderName.Create("local").Value;
         ProviderName mixed = ProviderName.Create("Local").Value;
 
-        Assert.Equal(lower, mixed);
-        Assert.True(lower == mixed);
-        Assert.Equal(lower.GetHashCode(), mixed.GetHashCode());
+        Assert.Equal(lower, ProviderName.Create("local").Value);
+        Assert.True(lower == ProviderName.Create("local").Value);
+        Assert.NotEqual(lower, mixed);
+        Assert.True(lower != mixed);
     }
 }

@@ -291,7 +291,23 @@ public class CatalogJsonTests {
     }
 
     [Fact]
-    public void 提供商名重复被拒且不区分大小写() {
+    public void 提供商名重复被拒() {
+        ErrorOr<CatalogContents> result = CatalogJson.Parse("""
+            {
+              "providers": [
+                { "providerName": "dashscope", "baseAddress": "https://example.com/v1", "apiKey": "sk" },
+                { "providerName": "dashscope", "baseAddress": "https://example.com/v1", "apiKey": "sk" }
+              ],
+              "models": []
+            }
+            """);
+
+        Assert.True(result.IsError);
+        Assert.Equal("Catalog.ProviderAlreadyExists", result.FirstError.Code);
+    }
+
+    [Fact]
+    public void 提供商名大小写不同不视为重复() {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -302,8 +318,8 @@ public class CatalogJsonTests {
             }
             """);
 
-        Assert.True(result.IsError);
-        Assert.Equal("Catalog.ProviderAlreadyExists", result.FirstError.Code);
+        Assert.False(result.IsError);
+        Assert.Equal(2, result.Value.Providers.Length);
     }
 
     [Fact]

@@ -24,13 +24,22 @@ public class CatalogContentsTests {
     }
 
     [Fact]
-    public void 提供商名重复被拒且不区分大小写() {
+    public void 提供商名重复被拒() {
         ErrorOr<CatalogContents> result = CatalogContents.Create(
-            [TestData.Provider("dashscope"), TestData.Provider("DashScope")],
+            [TestData.Provider("dashscope"), TestData.Provider("dashscope")],
             []);
 
         Assert.True(result.IsError);
         Assert.Equal("Catalog.ProviderAlreadyExists", result.FirstError.Code);
+    }
+
+    [Fact]
+    public void 提供商名大小写不同不视为重复() {
+        ErrorOr<CatalogContents> result = CatalogContents.Create(
+            [TestData.Provider("dashscope"), TestData.Provider("DashScope")],
+            []);
+
+        Assert.False(result.IsError);
     }
 
     [Fact]
@@ -65,7 +74,7 @@ public class CatalogContentsTests {
     [Fact]
     public void 错误一次报全() {
         ErrorOr<CatalogContents> result = CatalogContents.Create(
-            [TestData.Provider("dashscope"), TestData.Provider("DashScope")],
+            [TestData.Provider("dashscope"), TestData.Provider("dashscope")],
             [TestData.Model("qwen-plus"), TestData.Model("qwen-plus"), TestData.Model("gpt-4o", "missing")]);
 
         Assert.True(result.IsError);

@@ -2,7 +2,7 @@ namespace ApiHub.Shared.Models;
 
 /// <summary>一个提供商：OpenAI 兼容端点与接入凭据。</summary>
 public sealed record ProviderDefinition {
-    /// <summary>提供商名，在目录内不区分大小写地唯一。</summary>
+    /// <summary>提供商名，在目录内大小写敏感地唯一。</summary>
     public required ProviderName ProviderName {
         get; init;
     }
