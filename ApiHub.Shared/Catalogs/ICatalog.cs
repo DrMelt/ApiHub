@@ -4,7 +4,8 @@ using ErrorOr;
 namespace ApiHub.Shared.Catalogs;
 
 /// <summary>目录的读取与变更契约。变更非线程安全，由调用方同步；读取无需加锁。</summary>
-public interface ICatalog : IReadOnlyCatalog {
+public interface ICatalog : IReadOnlyCatalog
+{
     /// <summary>新增提供商。提供商名已存在时拒绝。</summary>
     ErrorOr<Success> AddProvider(ProviderDefinition provider);
 

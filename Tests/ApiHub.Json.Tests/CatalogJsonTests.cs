@@ -1,5 +1,4 @@
 using ApiHub.Catalogs;
-using ApiHub.Json;
 using ApiHub.Shared.Models;
 using ApiHub.Tests.Fixture;
 using ErrorOr;
@@ -7,19 +6,22 @@ using System.Text.Json;
 
 namespace ApiHub.Json.Tests;
 
-public class CatalogJsonTests {
+public class CatalogJsonTests
+{
     private static Catalog Sample() => new(TestData.Contents(
         [TestData.Provider("dashscope", apiKey: "sk-1")],
         [TestData.Model("qwen-plus"), TestData.Model("qwen-max")]));
 
-    private static string[] Entries(string json, string collection, string key) {
+    private static string[] Entries(string json, string collection, string key)
+    {
         using JsonDocument document = JsonDocument.Parse(json);
 
         return [.. document.RootElement.GetProperty(collection).EnumerateArray()
             .Select(item => item.GetProperty(key).GetString()!)];
     }
 
-    private static void AssertInvalidJson(string json) {
+    private static void AssertInvalidJson(string json)
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse(json);
 
         Assert.True(result.IsError);
@@ -27,7 +29,8 @@ public class CatalogJsonTests {
     }
 
     [Fact]
-    public void 目录内容往返后保持查找结果() {
+    public void 目录内容往返后保持查找结果()
+    {
         Catalog rebuilt = new(TestData.Ok(CatalogJson.Parse(Sample().Contents.ToJson())));
 
         ModelDefinition model = rebuilt.FindModel(TestData.ModelName("qwen-plus"))!;
@@ -40,7 +43,8 @@ public class CatalogJsonTests {
     }
 
     [Fact]
-    public void 原始大小写往返保留() {
+    public void 原始大小写往返保留()
+    {
         Catalog catalog = new(TestData.Contents(
             [TestData.Provider("DashScope")],
             [TestData.Model("Qwen-Plus", "DashScope")]));
@@ -52,7 +56,8 @@ public class CatalogJsonTests {
     }
 
     [Fact]
-    public void 导出键名与结构固定() {
+    public void 导出键名与结构固定()
+    {
         using JsonDocument document = JsonDocument.Parse(Sample().Contents.ToJson());
         JsonElement provider = document.RootElement.GetProperty("providers")[0];
 
@@ -64,12 +69,13 @@ public class CatalogJsonTests {
 
         Assert.Equal("qwen-max", model.GetProperty("modelName").GetString());
         Assert.Equal("dashscope", model.GetProperty("providerName").GetString());
-Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
+        Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
         Assert.Equal("qwen-max", model.GetProperty("providerModelName").GetString());
     }
 
     [Fact]
-    public void 本地模型名与提供商模型名往返保留() {
+    public void 本地模型名与提供商模型名往返保留()
+    {
         Catalog catalog = new(TestData.Contents(
             [TestData.Provider("aliyun")],
             [TestData.Model("qwen-plus-aliyun", "aliyun", "qwen-plus")]));
@@ -81,7 +87,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 提供商模型名缺失时取本地模型名() {
+    public void 提供商模型名缺失时取本地模型名()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -98,7 +105,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 同一提供商模型名可挂在多个提供商下() {
+    public void 同一提供商模型名可挂在多个提供商下()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -117,7 +125,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 导出项按名序数排序() {
+    public void 导出项按名序数排序()
+    {
         Catalog catalog = new(TestData.Contents(
             [TestData.Provider("zeta"), TestData.Provider("alpha")],
             [TestData.Model("qwen-plus", "zeta"), TestData.Model("qwen-max", "zeta")]));
@@ -129,21 +138,24 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 同一内容的导出文本一致() {
+    public void 同一内容的导出文本一致()
+    {
         CatalogContents contents = Sample().Contents;
 
         Assert.Equal(contents.ToJson(), contents.ToJson());
     }
 
     [Fact]
-    public void 端点按Uri规范化后导出() {
+    public void 端点按Uri规范化后导出()
+    {
         Catalog catalog = new(TestData.Contents([TestData.Provider("p", "https://example.com")], []));
 
         Assert.Equal("https://example.com/", Entries(catalog.Contents.ToJson(), "providers", "baseAddress").Single());
     }
 
     [Fact]
-    public void 空目录往返后仍为空() {
+    public void 空目录往返后仍为空()
+    {
         CatalogContents contents = TestData.Ok(CatalogJson.Parse(new Catalog().Contents.ToJson()));
 
         Assert.Empty(contents.Providers);
@@ -151,7 +163,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 读取时键名大小写不敏感() {
+    public void 读取时键名大小写不敏感()
+    {
         CatalogContents contents = TestData.Ok(CatalogJson.Parse("""
             {
               "Providers": [
@@ -168,7 +181,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 缺失集合视为空() {
+    public void 缺失集合视为空()
+    {
         CatalogContents contents = TestData.Ok(CatalogJson.Parse("{}"));
 
         Assert.Empty(contents.Providers);
@@ -176,7 +190,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 未知属性被忽略() {
+    public void 未知属性被忽略()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -200,7 +215,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     public void 无效JSON被拒() => AssertInvalidJson("{ \"providers\": [");
 
     [Fact]
-    public void JSON为null或空被拒() {
+    public void JSON为null或空被拒()
+    {
         AssertInvalidJson("null");
         AssertInvalidJson("");
         AssertInvalidJson(null!);
@@ -210,13 +226,15 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     public void 结构不符被拒() => AssertInvalidJson("""{ "providers": 1 }""");
 
     [Fact]
-    public void 列表项为null被拒() {
+    public void 列表项为null被拒()
+    {
         AssertInvalidJson("""{ "providers": [null], "models": [] }""");
         AssertInvalidJson("""{ "providers": [], "models": [null] }""");
     }
 
     [Fact]
-    public void 端点非法被拒() {
+    public void 端点非法被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -231,7 +249,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 提供商名为空被拒() {
+    public void 提供商名为空被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -246,7 +265,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 模型名为空被拒() {
+    public void 模型名为空被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [],
@@ -261,7 +281,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 凭据为空被拒() {
+    public void 凭据为空被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -276,7 +297,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 缺失字段视为非法值() {
+    public void 缺失字段视为非法值()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -291,7 +313,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 字段错误一次报全() {
+    public void 字段错误一次报全()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -312,7 +335,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 字段错误时不报集合错误() {
+    public void 字段错误时不报集合错误()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -329,7 +353,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 凭据中的特殊字符往返保留() {
+    public void 凭据中的特殊字符往返保留()
+    {
         Catalog catalog = new(TestData.Contents(
             [TestData.Provider("p", apiKey: "sk-\"quote\"\\slash\nnewline")],
             []));
@@ -340,7 +365,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 提供商名重复被拒() {
+    public void 提供商名重复被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -356,7 +382,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 提供商名大小写不同不视为重复() {
+    public void 提供商名大小写不同不视为重复()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -372,7 +399,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 模型名重复被拒() {
+    public void 模型名重复被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -390,7 +418,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 模型引用不存在的提供商被拒() {
+    public void 模型引用不存在的提供商被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [
@@ -407,7 +436,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 上下文长度往返保留() {
+    public void 上下文长度往返保留()
+    {
         Catalog catalog = new(TestData.Contents(
             [TestData.Provider("dashscope")],
             [TestData.Model("qwen-plus", contextLength: 8192)]));
@@ -418,7 +448,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 模型上下文缺失被拒() {
+    public void 模型上下文缺失被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [],
@@ -433,7 +464,8 @@ Assert.Equal(32768, model.GetProperty("contextLength").GetInt32());
     }
 
     [Fact]
-    public void 模型上下文非正被拒() {
+    public void 模型上下文非正被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
               "providers": [],

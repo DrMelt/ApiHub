@@ -5,8 +5,10 @@ using Models = ApiHub.Shared.Models;
 namespace ApiHub.Tests.Fixture;
 
 /// <summary>测试用合法对象的构造口。</summary>
-public static class TestData {
-    public static T Ok<T>(ErrorOr<T> result) {
+public static class TestData
+{
+    public static T Ok<T>(ErrorOr<T> result)
+    {
         Assert.False(result.IsError, string.Join(" ", result.Errors.Select(error => error.Description)));
 
         return result.Value;
@@ -28,7 +30,7 @@ public static class TestData {
         string apiKey = "k") =>
         ProviderDefinition.Create(ProviderName(providerName), Endpoint(baseAddress), Key(apiKey));
 
-public static ModelContextLength ContextLength(int value) => Ok(Models.ModelContextLength.Create(value));
+    public static ModelContextLength ContextLength(int value) => Ok(Models.ModelContextLength.Create(value));
 
     public static ModelDefinition Model(
         string modelName,

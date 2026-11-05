@@ -4,9 +4,11 @@ using ErrorOr;
 
 namespace ApiHub.Shared.Tests.Models;
 
-public class CatalogContentsTests {
+public class CatalogContentsTests
+{
     [Fact]
-    public void 集合内自一致的内容被接受() {
+    public void 集合内自一致的内容被接受()
+    {
         CatalogContents contents = TestData.Contents(
             [TestData.Provider("dashscope")],
             [TestData.Model("qwen-plus")]);
@@ -16,7 +18,8 @@ public class CatalogContentsTests {
     }
 
     [Fact]
-    public void 空集合被接受() {
+    public void 空集合被接受()
+    {
         CatalogContents contents = TestData.Ok(CatalogContents.Create([], []));
 
         Assert.Empty(contents.Providers);
@@ -24,7 +27,8 @@ public class CatalogContentsTests {
     }
 
     [Fact]
-    public void 提供商名重复被拒() {
+    public void 提供商名重复被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogContents.Create(
             [TestData.Provider("dashscope"), TestData.Provider("dashscope")],
             []);
@@ -34,7 +38,8 @@ public class CatalogContentsTests {
     }
 
     [Fact]
-    public void 提供商名大小写不同不视为重复() {
+    public void 提供商名大小写不同不视为重复()
+    {
         ErrorOr<CatalogContents> result = CatalogContents.Create(
             [TestData.Provider("dashscope"), TestData.Provider("DashScope")],
             []);
@@ -43,7 +48,8 @@ public class CatalogContentsTests {
     }
 
     [Fact]
-    public void 模型名重复被拒() {
+    public void 模型名重复被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogContents.Create(
             [TestData.Provider("dashscope")],
             [TestData.Model("qwen-plus"), TestData.Model("qwen-plus")]);
@@ -53,7 +59,8 @@ public class CatalogContentsTests {
     }
 
     [Fact]
-    public void 同一提供商模型名可挂在多个提供商下() {
+    public void 同一提供商模型名可挂在多个提供商下()
+    {
         ErrorOr<CatalogContents> result = CatalogContents.Create(
             [TestData.Provider("dashscope"), TestData.Provider("aliyun")],
             [
@@ -66,7 +73,8 @@ public class CatalogContentsTests {
     }
 
     [Fact]
-    public void 模型名大小写不同不视为重复() {
+    public void 模型名大小写不同不视为重复()
+    {
         ErrorOr<CatalogContents> result = CatalogContents.Create(
             [TestData.Provider("dashscope")],
             [TestData.Model("qwen-plus"), TestData.Model("Qwen-Plus")]);
@@ -75,7 +83,8 @@ public class CatalogContentsTests {
     }
 
     [Fact]
-    public void 模型引用不存在的提供商被拒() {
+    public void 模型引用不存在的提供商被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogContents.Create(
             [TestData.Provider("dashscope")],
             [TestData.Model("qwen-plus", "missing")]);
@@ -85,7 +94,8 @@ public class CatalogContentsTests {
     }
 
     [Fact]
-    public void 错误一次报全() {
+    public void 错误一次报全()
+    {
         ErrorOr<CatalogContents> result = CatalogContents.Create(
             [TestData.Provider("dashscope"), TestData.Provider("dashscope")],
             [TestData.Model("qwen-plus"), TestData.Model("qwen-plus"), TestData.Model("gpt-4o", "missing")]);
@@ -98,7 +108,8 @@ public class CatalogContentsTests {
     }
 
     [Fact]
-    public void 未初始化的集合被拒() {
+    public void 未初始化的集合被拒()
+    {
         ErrorOr<CatalogContents> result = CatalogContents.Create(default, []);
 
         Assert.True(result.IsError);

@@ -4,7 +4,8 @@ using ErrorOr;
 namespace ApiHub.Shared.Catalogs;
 
 /// <summary>目录契约的错误。错误码属于契约，供调用方按 Code 判定。</summary>
-public static class CatalogErrors {
+public static class CatalogErrors
+{
     /// <summary>提供商名重复的冲突错误。</summary>
     public static Error DuplicateProvider(ProviderName providerName) =>
         Error.Conflict("Catalog.ProviderAlreadyExists", $"提供商 {providerName.Value} 已存在。");

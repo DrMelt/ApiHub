@@ -7,7 +7,8 @@ using System.Collections.Immutable;
 
 namespace ApiHub.Tests.Catalogs;
 
-public class CatalogTests {
+public class CatalogTests
+{
     private static Catalog Sample() => new(TestData.Contents(
         [TestData.Provider("dashscope", "https://example.com/v1", "sk-1")],
         [TestData.Model("qwen-plus"), TestData.Model("qwen-max")]));
@@ -24,7 +25,8 @@ public class CatalogTests {
         [.. catalog.Models.Select(model => model.ModelName.Value)];
 
     [Fact]
-    public void 查找模型命中其归属提供商() {
+    public void 查找模型命中其归属提供商()
+    {
         Catalog catalog = Sample();
 
         ModelDefinition model = catalog.FindModel(TestData.ModelName("qwen-plus"))!;
@@ -34,17 +36,20 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 查找模型名大小写敏感() {
+    public void 查找模型名大小写敏感()
+    {
         Assert.Null(Sample().FindModel(TestData.ModelName("Qwen-Plus")));
     }
 
     [Fact]
-    public void 查找提供商名大小写敏感() {
+    public void 查找提供商名大小写敏感()
+    {
         Assert.Null(Sample().FindProvider(TestData.ProviderName("DASHSCOPE")));
     }
 
     [Fact]
-    public void 查找未知模型与未知提供商返回空() {
+    public void 查找未知模型与未知提供商返回空()
+    {
         Catalog catalog = Sample();
 
         Assert.Null(catalog.FindModel(TestData.ModelName("gpt-4o")));
@@ -52,7 +57,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 查找连接信息给出接入所需全部信息() {
+    public void 查找连接信息给出接入所需全部信息()
+    {
         ModelConnection connection = Sample().FindModelConnection(TestData.ModelName("qwen-plus"))!;
 
         Assert.Equal("qwen-plus", connection.ModelName.Value);
@@ -64,17 +70,20 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 查找连接信息未命中返回空() {
+    public void 查找连接信息未命中返回空()
+    {
         Assert.Null(Sample().FindModelConnection(TestData.ModelName("gpt-4o")));
     }
 
     [Fact]
-    public void 查找连接信息模型名大小写敏感() {
+    public void 查找连接信息模型名大小写敏感()
+    {
         Assert.Null(Sample().FindModelConnection(TestData.ModelName("Qwen-Plus")));
     }
 
     [Fact]
-    public void 模型改指向另一提供商后连接信息随新提供商() {
+    public void 模型改指向另一提供商后连接信息随新提供商()
+    {
         Catalog catalog = CatalogOf(
             [
                 TestData.Provider("a", "https://example.com/a", "k1"),
@@ -92,7 +101,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 替换提供商后连接信息随新凭据() {
+    public void 替换提供商后连接信息随新凭据()
+    {
         Catalog catalog = Sample();
         ProviderDefinition replacement = TestData.Provider("dashscope", "https://example.com/other", "sk-9");
 
@@ -105,7 +115,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 删除模型后不再命中查找() {
+    public void 删除模型后不再命中查找()
+    {
         Catalog catalog = Sample();
 
         Assert.False(catalog.RemoveModel(TestData.ModelName("qwen-max")).IsError);
@@ -115,7 +126,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 新增提供商就地生效() {
+    public void 新增提供商就地生效()
+    {
         Catalog catalog = Sample();
 
         Assert.False(catalog.AddProvider(TestData.Provider("local", "https://example.com/v1", "sk-2")).IsError);
@@ -124,7 +136,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 新增提供商失败状态不变() {
+    public void 新增提供商失败状态不变()
+    {
         Catalog catalog = Sample();
         string[] providers = ProviderNames(catalog);
 
@@ -134,7 +147,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 新增已存在的提供商被拒() {
+    public void 新增已存在的提供商被拒()
+    {
         ProviderDefinition provider = TestData.Provider("dashscope", "https://example.com/v1", "sk-1");
 
         ErrorOr<Success> result = Sample().AddProvider(provider);
@@ -144,7 +158,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 替换提供商就地生效() {
+    public void 替换提供商就地生效()
+    {
         Catalog catalog = Sample();
         ProviderDefinition replacement = TestData.Provider("dashscope", "https://example.com/other", "sk-9");
 
@@ -155,7 +170,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 替换不存在的提供商被拒() {
+    public void 替换不存在的提供商被拒()
+    {
         ErrorOr<Success> result = Sample().ReplaceProvider(TestData.Provider("missing"));
 
         Assert.True(result.IsError);
@@ -163,7 +179,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 删除提供商后不再在目录中() {
+    public void 删除提供商后不再在目录中()
+    {
         Catalog catalog = CatalogOf([TestData.Provider("local")], []);
 
         Assert.False(catalog.RemoveProvider(TestData.ProviderName("local")).IsError);
@@ -172,7 +189,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 删除仍被模型引用的提供商被拒() {
+    public void 删除仍被模型引用的提供商被拒()
+    {
         ErrorOr<Success> result = Sample().RemoveProvider(TestData.ProviderName("dashscope"));
 
         Assert.True(result.IsError);
@@ -180,7 +198,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 删除提供商失败状态不变() {
+    public void 删除提供商失败状态不变()
+    {
         Catalog catalog = Sample();
         string[] providers = ProviderNames(catalog);
 
@@ -190,7 +209,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 删除不存在的提供商被拒() {
+    public void 删除不存在的提供商被拒()
+    {
         ErrorOr<Success> result = Sample().RemoveProvider(TestData.ProviderName("missing"));
 
         Assert.True(result.IsError);
@@ -198,7 +218,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 新增模型可被查找命中() {
+    public void 新增模型可被查找命中()
+    {
         Catalog catalog = Sample();
 
         Assert.False(catalog.AddModel(TestData.Model("qwen3")).IsError);
@@ -207,7 +228,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 同一提供商模型名可挂在多个提供商下() {
+    public void 同一提供商模型名可挂在多个提供商下()
+    {
         Catalog catalog = CatalogOf(
             [
                 TestData.Provider("a", "https://example.com/a", "k1"),
@@ -222,7 +244,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 模型名大小写不同视为新模型() {
+    public void 模型名大小写不同视为新模型()
+    {
         Catalog catalog = Sample();
 
         Assert.False(catalog.AddModel(TestData.Model("Qwen-Plus")).IsError);
@@ -232,7 +255,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 新增模型引用不存在的提供商被拒() {
+    public void 新增模型引用不存在的提供商被拒()
+    {
         ErrorOr<Success> result = Sample().AddModel(TestData.Model("m", "missing"));
 
         Assert.True(result.IsError);
@@ -240,7 +264,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 新增模型失败状态不变() {
+    public void 新增模型失败状态不变()
+    {
         Catalog catalog = Sample();
         string[] models = ModelNames(catalog);
 
@@ -250,7 +275,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 新增已存在的模型被拒() {
+    public void 新增已存在的模型被拒()
+    {
         ErrorOr<Success> result = Sample().AddModel(TestData.Model("qwen-plus"));
 
         Assert.True(result.IsError);
@@ -258,7 +284,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 替换模型改指向另一提供商() {
+    public void 替换模型改指向另一提供商()
+    {
         Catalog catalog = CatalogOf(
             [
                 TestData.Provider("a", "https://example.com/v1", "k1"),
@@ -275,7 +302,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 替换不存在的模型被拒() {
+    public void 替换不存在的模型被拒()
+    {
         ErrorOr<Success> result = Sample().ReplaceModel(TestData.Model("missing"));
 
         Assert.True(result.IsError);
@@ -283,7 +311,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 替换模型改指向不存在的提供商被拒() {
+    public void 替换模型改指向不存在的提供商被拒()
+    {
         ErrorOr<Success> result = Sample().ReplaceModel(TestData.Model("qwen-plus", "missing"));
 
         Assert.True(result.IsError);
@@ -291,7 +320,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 变更操作与内容校验给出同一错误() {
+    public void 变更操作与内容校验给出同一错误()
+    {
         ErrorOr<CatalogContents> fromContents = CatalogContents.Create(
             [TestData.Provider("dashscope", "https://example.com/v1", "sk-1")],
             [TestData.Model("m", "missing")]);
@@ -302,7 +332,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 删除不存在的模型被拒() {
+    public void 删除不存在的模型被拒()
+    {
         ErrorOr<Success> result = Sample().RemoveModel(TestData.ModelName("missing"));
 
         Assert.True(result.IsError);
@@ -310,7 +341,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 从内容构造目录并查找命中() {
+    public void 从内容构造目录并查找命中()
+    {
         CatalogContents contents = TestData.Contents(
             [TestData.Provider("dashscope", "https://example.com/v1", "sk-1")],
             [TestData.Model("qwen-plus")]);
@@ -321,7 +353,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 空目录没有提供商与模型() {
+    public void 空目录没有提供商与模型()
+    {
         Catalog catalog = new();
 
         Assert.Empty(catalog.Providers);
@@ -329,7 +362,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 文档示例构造目录并查找() {
+    public void 文档示例构造目录并查找()
+    {
         Catalog catalog = new();
 
         ErrorOr<Success> added = ProviderName.Create("dashscope")
@@ -352,7 +386,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 导出内容后再构造保持原有查找结果() {
+    public void 导出内容后再构造保持原有查找结果()
+    {
         Catalog catalog = Sample();
 
         Catalog rebuilt = new(catalog.Contents);
@@ -363,7 +398,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 导出的集合与目录内部不共享() {
+    public void 导出的集合与目录内部不共享()
+    {
         Catalog catalog = Sample();
 
         List<ProviderDefinition> providers = [.. catalog.Contents.Providers];
@@ -373,7 +409,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 导出的快照在后续变更后保持旧内容() {
+    public void 导出的快照在后续变更后保持旧内容()
+    {
         Catalog catalog = Sample();
         CatalogContents snapshot = catalog.Contents;
 
@@ -384,7 +421,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 读取的集合随目录变更反映新状态() {
+    public void 读取的集合随目录变更反映新状态()
+    {
         Catalog catalog = Sample();
         IReadOnlyCollection<ProviderDefinition> providers = catalog.Providers;
 
@@ -394,7 +432,8 @@ public class CatalogTests {
     }
 
     [Fact]
-    public void 内存目录可作为读写契约使用() {
+    public void 内存目录可作为读写契约使用()
+    {
         Catalog catalog = new();
 
         Assert.False(catalog.AddProvider(TestData.Provider("dashscope")).IsError);

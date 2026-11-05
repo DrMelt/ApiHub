@@ -3,11 +3,13 @@ using ErrorOr;
 namespace ApiHub.Shared.Models;
 
 /// <summary>模型上下文窗口长度，按 token 计。必须大于 0。</summary>
-public sealed record ModelContextLength {
+public sealed record ModelContextLength
+{
     private ModelContextLength(int value) => Value = value;
 
     /// <summary>上下文窗口长度。</summary>
-    public int Value {
+    public int Value
+    {
         get;
     }
 

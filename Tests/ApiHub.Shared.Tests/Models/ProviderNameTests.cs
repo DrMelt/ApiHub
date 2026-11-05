@@ -3,14 +3,16 @@ using ErrorOr;
 
 namespace ApiHub.Shared.Tests.Models;
 
-public class ProviderNameTests {
+public class ProviderNameTests
+{
     [Theory]
     [InlineData("local")]
     [InlineData("DashScope")]
     [InlineData("bad id")]
     [InlineData("提供者")]
     [InlineData("https://example.com/v1")]
-    public void 任意内容通过(string value) {
+    public void 任意内容通过(string value)
+    {
         ProviderName name = ProviderName.Create(value).Value;
 
         Assert.Equal(value, name.Value);
@@ -19,7 +21,8 @@ public class ProviderNameTests {
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    public void 空标识被拒(string value) {
+    public void 空标识被拒(string value)
+    {
         ErrorOr<ProviderName> result = ProviderName.Create(value);
 
         Assert.True(result.IsError);
@@ -27,7 +30,8 @@ public class ProviderNameTests {
     }
 
     [Fact]
-    public void 标识大小写敏感地判定() {
+    public void 标识大小写敏感地判定()
+    {
         ProviderName lower = ProviderName.Create("local").Value;
         ProviderName mixed = ProviderName.Create("Local").Value;
 

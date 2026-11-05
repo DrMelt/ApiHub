@@ -5,21 +5,26 @@ using ErrorOr;
 namespace ApiHub.Catalogs;
 
 /// <summary>提供商与模型的内存目录。变更非线程安全，由调用方同步；读取无需加锁。</summary>
-public sealed class Catalog : ICatalog {
+public sealed class Catalog : ICatalog
+{
     private readonly Dictionary<ProviderName, ProviderDefinition> _providers = [];
     private readonly Dictionary<ModelName, ModelDefinition> _models = [];
 
     /// <summary>空目录。</summary>
-    public Catalog() {
+    public Catalog()
+    {
     }
 
     /// <summary>由已校验的内容装配目录。</summary>
-    public Catalog(CatalogContents contents) {
-        foreach (ProviderDefinition provider in contents.Providers) {
+    public Catalog(CatalogContents contents)
+    {
+        foreach (ProviderDefinition provider in contents.Providers)
+        {
             _providers.Add(provider.ProviderName, provider);
         }
 
-        foreach (ModelDefinition model in contents.Models) {
+        foreach (ModelDefinition model in contents.Models)
+        {
             _models.Add(model.ModelName, model);
         }
     }
@@ -43,8 +48,10 @@ public sealed class Catalog : ICatalog {
         _providers.TryGetValue(providerName, out ProviderDefinition? provider) ? provider : null;
 
     /// <inheritdoc/>
-    public ErrorOr<Success> AddProvider(ProviderDefinition provider) {
-        if (_providers.ContainsKey(provider.ProviderName)) {
+    public ErrorOr<Success> AddProvider(ProviderDefinition provider)
+    {
+        if (_providers.ContainsKey(provider.ProviderName))
+        {
             return CatalogErrors.DuplicateProvider(provider.ProviderName);
         }
 
@@ -54,8 +61,10 @@ public sealed class Catalog : ICatalog {
     }
 
     /// <inheritdoc/>
-    public ErrorOr<Success> ReplaceProvider(ProviderDefinition provider) {
-        if (!_providers.ContainsKey(provider.ProviderName)) {
+    public ErrorOr<Success> ReplaceProvider(ProviderDefinition provider)
+    {
+        if (!_providers.ContainsKey(provider.ProviderName))
+        {
             return CatalogErrors.ProviderNotFound(provider.ProviderName);
         }
 
@@ -65,13 +74,16 @@ public sealed class Catalog : ICatalog {
     }
 
     /// <inheritdoc/>
-    public ErrorOr<Success> RemoveProvider(ProviderName providerName) {
-        if (!_providers.ContainsKey(providerName)) {
+    public ErrorOr<Success> RemoveProvider(ProviderName providerName)
+    {
+        if (!_providers.ContainsKey(providerName))
+        {
             return CatalogErrors.ProviderNotFound(providerName);
         }
 
         List<ModelDefinition> referenced = [.. _models.Values.Where(model => model.ProviderName == providerName)];
-        if (referenced.Count > 0) {
+        if (referenced.Count > 0)
+        {
             string models = string.Join("、", referenced.Select(model => model.ModelName.Value));
 
             return Error.Conflict("Catalog.ProviderInUse", $"提供商 {providerName.Value} 仍被模型 {models} 引用，先删除或改指向其他提供商。");
@@ -83,12 +95,15 @@ public sealed class Catalog : ICatalog {
     }
 
     /// <inheritdoc/>
-    public ErrorOr<Success> AddModel(ModelDefinition model) {
-        if (_models.ContainsKey(model.ModelName)) {
+    public ErrorOr<Success> AddModel(ModelDefinition model)
+    {
+        if (_models.ContainsKey(model.ModelName))
+        {
             return CatalogErrors.DuplicateModel(model.ModelName);
         }
 
-        if (!_providers.ContainsKey(model.ProviderName)) {
+        if (!_providers.ContainsKey(model.ProviderName))
+        {
             return CatalogErrors.ProviderNotFound(model.ProviderName);
         }
 
@@ -98,12 +113,15 @@ public sealed class Catalog : ICatalog {
     }
 
     /// <inheritdoc/>
-    public ErrorOr<Success> ReplaceModel(ModelDefinition model) {
-        if (!_models.ContainsKey(model.ModelName)) {
+    public ErrorOr<Success> ReplaceModel(ModelDefinition model)
+    {
+        if (!_models.ContainsKey(model.ModelName))
+        {
             return CatalogErrors.ModelNotFound(model.ModelName);
         }
 
-        if (!_providers.ContainsKey(model.ProviderName)) {
+        if (!_providers.ContainsKey(model.ProviderName))
+        {
             return CatalogErrors.ProviderNotFound(model.ProviderName);
         }
 
@@ -113,8 +131,10 @@ public sealed class Catalog : ICatalog {
     }
 
     /// <inheritdoc/>
-    public ErrorOr<Success> RemoveModel(ModelName modelName) {
-        if (!_models.Remove(modelName)) {
+    public ErrorOr<Success> RemoveModel(ModelName modelName)
+    {
+        if (!_models.Remove(modelName))
+        {
             return CatalogErrors.ModelNotFound(modelName);
         }
 

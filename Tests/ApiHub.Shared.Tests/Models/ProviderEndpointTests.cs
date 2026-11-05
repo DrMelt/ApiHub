@@ -3,11 +3,13 @@ using ErrorOr;
 
 namespace ApiHub.Shared.Tests.Models;
 
-public class ProviderEndpointTests {
+public class ProviderEndpointTests
+{
     [Theory]
     [InlineData("https://example.com/v1")]
     [InlineData("http://127.0.0.1:11434/v1")]
-    public void 合法端点通过(string value) {
+    public void 合法端点通过(string value)
+    {
         ProviderEndpoint endpoint = ProviderEndpoint.Create(value).Value;
 
         Assert.Equal(value, endpoint.Address.ToString());
@@ -18,7 +20,8 @@ public class ProviderEndpointTests {
     [InlineData("example.com/v1")]
     [InlineData("/v1")]
     [InlineData("ftp://example.com")]
-    public void 非法端点被拒(string value) {
+    public void 非法端点被拒(string value)
+    {
         ErrorOr<ProviderEndpoint> result = ProviderEndpoint.Create(value);
 
         Assert.True(result.IsError);
@@ -26,7 +29,8 @@ public class ProviderEndpointTests {
     }
 
     [Fact]
-    public void 地址按Uri规范化() {
+    public void 地址按Uri规范化()
+    {
         ProviderEndpoint endpoint = ProviderEndpoint.Create("https://example.com").Value;
 
         Assert.Equal("https://example.com/", endpoint.Address.ToString());

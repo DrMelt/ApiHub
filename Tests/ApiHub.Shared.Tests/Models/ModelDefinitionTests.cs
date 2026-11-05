@@ -4,19 +4,22 @@ using ErrorOr;
 
 namespace ApiHub.Shared.Tests.Models;
 
-public class ModelDefinitionTests {
+public class ModelDefinitionTests
+{
     [Fact]
-    public void 由类型对象字段构成定义() {
+    public void 由类型对象字段构成定义()
+    {
         ModelDefinition model = TestData.Model("qwen-plus", contextLength: 8192);
 
         Assert.Equal("qwen-plus", model.ModelName.Value);
         Assert.Equal("dashscope", model.ProviderName.Value);
-Assert.Equal("qwen-plus", model.ProviderModelName.Value);
+        Assert.Equal("qwen-plus", model.ProviderModelName.Value);
         Assert.Equal(8192, model.ContextLength.Value);
     }
 
     [Fact]
-    public void 本地模型名与提供商模型名可以不同() {
+    public void 本地模型名与提供商模型名可以不同()
+    {
         ModelDefinition model = TestData.Model("qwen-plus-aliyun", "aliyun", "qwen-plus", contextLength: 8192);
 
         Assert.Equal("qwen-plus-aliyun", model.ModelName.Value);
@@ -25,10 +28,11 @@ Assert.Equal("qwen-plus", model.ProviderModelName.Value);
     }
 
     [Fact]
-    public void 字段错误由类型对象给出() {
+    public void 字段错误由类型对象给出()
+    {
         ErrorOr<ModelName> modelName = ModelName.Create(" ");
         ErrorOr<ProviderName> providerName = ProviderName.Create(" ");
-ErrorOr<ProviderModelName> providerModelName = ProviderModelName.Create(" ");
+        ErrorOr<ProviderModelName> providerModelName = ProviderModelName.Create(" ");
         ErrorOr<ModelContextLength> contextLength = ModelContextLength.Create(0);
 
         Assert.Equal("ModelName.Invalid", modelName.FirstError.Code);

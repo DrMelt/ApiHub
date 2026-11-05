@@ -8,5 +8,6 @@ namespace ApiHub.Json;
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     PropertyNameCaseInsensitive = true)]
 [JsonSerializable(typeof(CatalogDocument))]
-internal partial class CatalogJsonContext : JsonSerializerContext {
+internal partial class CatalogJsonContext : JsonSerializerContext
+{
 }

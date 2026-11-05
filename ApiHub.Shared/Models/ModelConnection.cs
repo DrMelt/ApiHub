@@ -1,8 +1,10 @@
 namespace ApiHub.Shared.Models;
 
 /// <summary>模型连接信息：本地模型名、提供商模型名与接入所需的提供商名、端点、凭据及模型上下文。通常由目录按本地模型名解析得到。</summary>
-public sealed record ModelConnection {
-    private ModelConnection(ModelDefinition model, ProviderDefinition provider) {
+public sealed record ModelConnection
+{
+    private ModelConnection(ModelDefinition model, ProviderDefinition provider)
+    {
         ModelName = model.ModelName;
         ProviderName = provider.ProviderName;
         ProviderModelName = model.ProviderModelName;
@@ -12,32 +14,38 @@ public sealed record ModelConnection {
     }
 
     /// <summary>目录内的本地模型名，用作选择与流程引用。</summary>
-    public ModelName ModelName {
+    public ModelName ModelName
+    {
         get;
     }
 
     /// <summary>提供该模型的提供商名。</summary>
-    public ProviderName ProviderName {
+    public ProviderName ProviderName
+    {
         get;
     }
 
     /// <summary>请求提供商时使用的模型名。</summary>
-    public ProviderModelName ProviderModelName {
+    public ProviderModelName ProviderModelName
+    {
         get;
     }
 
     /// <summary>OpenAI 兼容端点。</summary>
-    public ProviderEndpoint BaseAddress {
+    public ProviderEndpoint BaseAddress
+    {
         get;
     }
 
     /// <summary>接入凭据。</summary>
-    public ApiKey ApiKey {
+    public ApiKey ApiKey
+    {
         get;
     }
 
     /// <summary>模型上下文窗口长度。</summary>
-    public ModelContextLength ContextLength {
+    public ModelContextLength ContextLength
+    {
         get;
     }
 
