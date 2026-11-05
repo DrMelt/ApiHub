@@ -11,14 +11,25 @@ public class ModelDefinitionTests {
 
         Assert.Equal("qwen-plus", model.ModelName.Value);
         Assert.Equal("dashscope", model.ProviderName.Value);
+        Assert.Equal("qwen-plus", model.ProviderModelName.Value);
+    }
+
+    [Fact]
+    public void 本地模型名与提供商模型名可以不同() {
+        ModelDefinition model = TestData.Model("qwen-plus-aliyun", "aliyun", "qwen-plus");
+
+        Assert.Equal("qwen-plus-aliyun", model.ModelName.Value);
+        Assert.Equal("qwen-plus", model.ProviderModelName.Value);
     }
 
     [Fact]
     public void 字段错误由类型对象给出() {
         ErrorOr<ModelName> modelName = ModelName.Create(" ");
         ErrorOr<ProviderName> providerName = ProviderName.Create(" ");
+        ErrorOr<ProviderModelName> providerModelName = ProviderModelName.Create(" ");
 
         Assert.Equal("ModelName.Invalid", modelName.FirstError.Code);
         Assert.Equal("ProviderName.Invalid", providerName.FirstError.Code);
+        Assert.Equal("ProviderModelName.Invalid", providerModelName.FirstError.Code);
     }
 }

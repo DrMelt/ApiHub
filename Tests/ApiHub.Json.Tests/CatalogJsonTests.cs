@@ -63,6 +63,55 @@ public class CatalogJsonTests {
 
         Assert.Equal("qwen-max", model.GetProperty("modelName").GetString());
         Assert.Equal("dashscope", model.GetProperty("providerName").GetString());
+        Assert.Equal("qwen-max", model.GetProperty("providerModelName").GetString());
+    }
+
+    [Fact]
+    public void 本地模型名与提供商模型名往返保留() {
+        Catalog catalog = new(TestData.Contents(
+            [TestData.Provider("aliyun")],
+            [TestData.Model("qwen-plus-aliyun", "aliyun", "qwen-plus")]));
+
+        Catalog rebuilt = new(TestData.Ok(CatalogJson.Parse(catalog.Contents.ToJson())));
+
+        Assert.Equal("qwen-plus-aliyun", rebuilt.Models.Single().ModelName.Value);
+        Assert.Equal("qwen-plus", rebuilt.Models.Single().ProviderModelName.Value);
+    }
+
+    [Fact]
+    public void 提供商模型名缺失时取本地模型名() {
+        ErrorOr<CatalogContents> result = CatalogJson.Parse("""
+            {
+              "providers": [
+                { "providerName": "dashscope", "baseAddress": "https://example.com/v1", "apiKey": "sk" }
+              ],
+              "models": [
+                { "modelName": "qwen-plus", "providerName": "dashscope" }
+              ]
+            }
+            """);
+
+        Assert.False(result.IsError);
+        Assert.Equal("qwen-plus", result.Value.Models.Single().ProviderModelName.Value);
+    }
+
+    [Fact]
+    public void 同一提供商模型名可挂在多个提供商下() {
+        ErrorOr<CatalogContents> result = CatalogJson.Parse("""
+            {
+              "providers": [
+                { "providerName": "a", "baseAddress": "https://example.com/a", "apiKey": "k1" },
+                { "providerName": "b", "baseAddress": "https://example.com/b", "apiKey": "k2" }
+              ],
+              "models": [
+                { "modelName": "qwen-plus-a", "providerName": "a", "providerModelName": "qwen-plus" },
+                { "modelName": "qwen-plus-b", "providerName": "b", "providerModelName": "qwen-plus" }
+              ]
+            }
+            """);
+
+        Assert.False(result.IsError);
+        Assert.Equal(2, result.Value.Models.Length);
     }
 
     [Fact]

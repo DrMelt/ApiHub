@@ -11,10 +11,10 @@ public class ChatClientFactoryTests {
     private const string BaseAddress = "http://127.0.0.1:11434/v1";
 
     [Fact]
-    public void 建立客户端时使用给定模型名与端点() {
+    public void 建立客户端时使用提供商模型名与端点() {
         ProviderDefinition provider = TestData.Provider("local", BaseAddress, "ollama");
 
-        IChatClient client = provider.CreateChatClient(TestData.ModelName("qwen3"));
+        IChatClient client = provider.CreateChatClient(TestData.ProviderModelName("qwen3"));
 
         ChatClientMetadata metadata = client.GetService<ChatClientMetadata>()!;
 
@@ -23,12 +23,12 @@ public class ChatClientFactoryTests {
     }
 
     [Fact]
-    public void 由目录取得的连接信息建立客户端() {
+    public void 由目录取得的连接信息使用提供商模型名建立客户端() {
         Catalog catalog = new(TestData.Contents(
             [TestData.Provider("local", BaseAddress, "ollama")],
-            [TestData.Model("qwen3", "local")]));
+            [TestData.Model("qwen3-local", "local", "qwen3")]));
 
-        IChatClient client = catalog.FindModelConnection(TestData.ModelName("qwen3"))!.CreateChatClient();
+        IChatClient client = catalog.FindModelConnection(TestData.ModelName("qwen3-local"))!.CreateChatClient();
 
         ChatClientMetadata metadata = client.GetService<ChatClientMetadata>()!;
 

@@ -33,13 +33,18 @@ internal sealed record ProviderDocument {
 
 /// <summary>模型的持久化字段原文。</summary>
 internal sealed record ModelDocument {
-    /// <summary>模型名原文。</summary>
+    /// <summary>本地模型名原文，在目录内唯一。</summary>
     public string? ModelName {
         get; init;
     }
 
     /// <summary>提供商名原文。</summary>
     public string? ProviderName {
+        get; init;
+    }
+
+    /// <summary>提供商使用的模型名原文，缺失时取本地模型名。</summary>
+    public string? ProviderModelName {
         get; init;
     }
 }

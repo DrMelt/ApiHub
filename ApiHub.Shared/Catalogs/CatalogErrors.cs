@@ -9,9 +9,10 @@ public static class CatalogErrors {
     public static Error DuplicateProvider(ProviderName providerName) =>
         Error.Conflict("Catalog.ProviderAlreadyExists", $"提供商 {providerName.Value} 已存在。");
 
-    /// <summary>模型名重复的冲突错误。</summary>
+    /// <summary>本地模型名重复的冲突错误。</summary>
     public static Error DuplicateModel(ModelName modelName) =>
-        Error.Conflict("Catalog.ModelAlreadyExists", $"模型 {modelName.Value} 已存在。");
+        Error.Conflict("Catalog.ModelAlreadyExists",
+            $"本地模型名 {modelName.Value} 已存在。同一提供商模型可以注册到多个提供商下，改用不同的本地模型名。");
 
     /// <summary>提供商不在目录中的未找到错误。</summary>
     public static Error ProviderNotFound(ProviderName providerName) =>

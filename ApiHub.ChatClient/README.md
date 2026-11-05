@@ -12,7 +12,7 @@ using Microsoft.Extensions.AI;
 IChatClient client = connection.CreateChatClient();
 ```
 
-`connection` 由目录的 `FindModelConnection` 取得，含模型名、提供商名、端点与凭据。也可由提供商定义与模型名建立：`provider.CreateChatClient(modelName)`。返回直连模型的裸 `IChatClient`，中间件由调用方自行叠加。
+`connection` 由目录的 `FindModelConnection` 取得，含本地模型名、提供商模型名、提供商名、端点与凭据。也可由提供商定义与提供商模型名建立：`provider.CreateChatClient(providerModelName)`。返回直连模型的裸 `IChatClient`，中间件由调用方自行叠加。
 
 本包只依赖 `ApiHub.Shared`，不需要目录实现包 `ApiHub`。
 
