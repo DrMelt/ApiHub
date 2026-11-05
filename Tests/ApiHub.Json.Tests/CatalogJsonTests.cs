@@ -39,7 +39,7 @@ public class CatalogJsonTests
         Assert.Equal("dashscope", model.ProviderName.Value);
         Assert.Equal("sk-1", rebuilt.FindProvider(model.ProviderName)!.ApiKey.Value);
         Assert.Equal("https://example.com/v1", rebuilt.FindProvider(model.ProviderName)!.BaseAddress.Address.ToString());
-        Assert.Equal(32768, model.ContextLength.Value);
+        Assert.Equal(32768, model.ContextLength!.Value);
     }
 
     [Fact]
@@ -444,23 +444,61 @@ public class CatalogJsonTests
 
         Catalog rebuilt = new(TestData.Ok(CatalogJson.Parse(catalog.Contents.ToJson())));
 
-        Assert.Equal(8192, rebuilt.FindModel(TestData.ModelName("qwen-plus"))!.ContextLength.Value);
+        Assert.Equal(8192, rebuilt.FindModel(TestData.ModelName("qwen-plus"))!.ContextLength!.Value);
     }
 
     [Fact]
-    public void 模型上下文缺失被拒()
+    public void 模型上下文缺失时接受且为未知()
     {
         ErrorOr<CatalogContents> result = CatalogJson.Parse("""
             {
-              "providers": [],
+              "providers": [
+                { "providerName": "dashscope", "baseAddress": "https://example.com/v1", "apiKey": "sk" }
+              ],
               "models": [
-                { "modelName": "qwen-plus", "providerName": "dashscope" }
+                { "modelName": "qwen-plus", "providerName": "dashscope", "providerModelName": "qwen-plus" }
               ]
             }
             """);
 
-        Assert.True(result.IsError);
-        Assert.Equal("ModelContextLength.Invalid", result.FirstError.Code);
+        Assert.False(result.IsError);
+        Assert.Null(result.Value.Models.Single().ContextLength);
+    }
+
+    [Fact]
+    public void 模型上下文为null时视为未知()
+    {
+        ErrorOr<CatalogContents> result = CatalogJson.Parse("""
+            {
+              "providers": [
+                { "providerName": "dashscope", "baseAddress": "https://example.com/v1", "apiKey": "sk" }
+              ],
+              "models": [
+                { "modelName": "qwen-plus", "providerName": "dashscope", "contextLength": null }
+              ]
+            }
+            """);
+
+        Assert.False(result.IsError);
+        Assert.Null(result.Value.Models.Single().ContextLength);
+    }
+
+    [Fact]
+    public void 上下文未知往返保持未知且导出省略()
+    {
+        Catalog catalog = new(TestData.Contents(
+            [TestData.Provider("dashscope")],
+            [TestData.Model("qwen-plus", contextLength: null)]));
+        string json = catalog.Contents.ToJson();
+
+        using JsonDocument document = JsonDocument.Parse(json);
+        JsonElement model = document.RootElement.GetProperty("models")[0];
+
+        Assert.False(model.TryGetProperty("contextLength", out _));
+
+        Catalog rebuilt = new(TestData.Ok(CatalogJson.Parse(json)));
+
+        Assert.Null(rebuilt.Models.Single().ContextLength);
     }
 
     [Fact]

@@ -36,12 +36,12 @@ public static class TestData
         string modelName,
         string providerName = "dashscope",
         string? providerModelName = null,
-        int contextLength = 32768) =>
+        int? contextLength = 32768) =>
         ModelDefinition.Create(
             ModelName(modelName),
             ProviderName(providerName),
             ProviderModelName(providerModelName ?? modelName),
-            ContextLength(contextLength));
+            contextLength is int value ? ContextLength(value) : null);
 
     public static CatalogContents Contents(ProviderDefinition[] providers, ModelDefinition[] models) =>
         Ok(CatalogContents.Create([.. providers], [.. models]));

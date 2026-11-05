@@ -14,7 +14,7 @@ public class ModelDefinitionTests
         Assert.Equal("qwen-plus", model.ModelName.Value);
         Assert.Equal("dashscope", model.ProviderName.Value);
         Assert.Equal("qwen-plus", model.ProviderModelName.Value);
-        Assert.Equal(8192, model.ContextLength.Value);
+        Assert.Equal(8192, model.ContextLength!.Value);
     }
 
     [Fact]
@@ -24,7 +24,19 @@ public class ModelDefinitionTests
 
         Assert.Equal("qwen-plus-aliyun", model.ModelName.Value);
         Assert.Equal("qwen-plus", model.ProviderModelName.Value);
-        Assert.Equal(8192, model.ContextLength.Value);
+        Assert.Equal(8192, model.ContextLength!.Value);
+    }
+
+    [Fact]
+    public void 上下文长度可缺省()
+    {
+        ModelDefinition model = ModelDefinition.Create(
+            TestData.ModelName("qwen-plus"),
+            TestData.ProviderName("dashscope"),
+            TestData.ProviderModelName("qwen-plus"));
+
+        Assert.Null(model.ContextLength);
+        Assert.Equal("qwen-plus", model.ProviderModelName.Value);
     }
 
     [Fact]

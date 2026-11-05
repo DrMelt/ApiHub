@@ -1,6 +1,6 @@
 namespace ApiHub.Shared.Models;
 
-/// <summary>模型连接信息：本地模型名、提供商模型名与接入所需的提供商名、端点、凭据及模型上下文。通常由目录按本地模型名解析得到。</summary>
+/// <summary>模型连接信息：本地模型名、提供商模型名与接入所需的提供商名、端点、凭据及可选的模型上下文。通常由目录按本地模型名解析得到。</summary>
 public sealed record ModelConnection
 {
     private ModelConnection(ModelDefinition model, ProviderDefinition provider)
@@ -43,8 +43,8 @@ public sealed record ModelConnection
         get;
     }
 
-    /// <summary>模型上下文窗口长度。</summary>
-    public ModelContextLength ContextLength
+    /// <summary>模型上下文窗口长度，null 表示未知。</summary>
+    public ModelContextLength? ContextLength
     {
         get;
     }

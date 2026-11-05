@@ -13,7 +13,7 @@ LLM 提供商与模型目录的数据对象与契约，不含存储与变更逻�
 
 ## 数据对象
 
-`ModelName`、`ProviderName`、`ProviderModelName`、`ProviderEndpoint`、`ApiKey`、`ModelContextLength`、`ModelDefinition`、`ProviderDefinition`、`ModelConnection`、`CatalogContents`。解析口为 `Create`，失败返回 Validation 错误。`ModelName` 是目录内的本地模型名，`ProviderModelName` 是请求提供商时使用的模型名。
+`ModelName`、`ProviderName`、`ProviderModelName`、`ProviderEndpoint`、`ApiKey`、`ModelContextLength`、`ModelDefinition`、`ProviderDefinition`、`ModelConnection`、`CatalogContents`。解析口为 `Create`，失败返回 Validation 错误。`ModelName` 是目录内的本地模型名，`ProviderModelName` 是请求提供商时使用的模型名。`ModelContextLength` 表示按 token 计的上下文窗口；`ModelDefinition` 的上下文长度可为 null，表示未知。
 
 ## 用法
 

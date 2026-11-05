@@ -66,7 +66,19 @@ public class CatalogTests
         Assert.Equal("qwen-plus", connection.ProviderModelName.Value);
         Assert.Equal("https://example.com/v1", connection.BaseAddress.Address.ToString());
         Assert.Equal("sk-1", connection.ApiKey.Value);
-        Assert.Equal(32768, connection.ContextLength.Value);
+        Assert.Equal(32768, connection.ContextLength!.Value);
+    }
+
+    [Fact]
+    public void 查找连接信息在模型无上下文时上下文为空()
+    {
+        Catalog catalog = CatalogOf(
+            [TestData.Provider("dashscope", "https://example.com/v1", "sk-1")],
+            [TestData.Model("qwen-plus", contextLength: null)]);
+
+        ModelConnection connection = catalog.FindModelConnection(TestData.ModelName("qwen-plus"))!;
+
+        Assert.Null(connection.ContextLength);
     }
 
     [Fact]

@@ -9,7 +9,7 @@ public static class CatalogJson
 {
     private const string InvalidJsonCode = "CatalogJson.InvalidJson";
 
-    /// <summary>导出目录内容为 JSON 文本。提供商与模型按名序数排序，同一内容导出的文本一致。</summary>
+    /// <summary>导出目录内容为 JSON 文本。提供商与模型按名序数排序，未知上下文省略，同一内容导出的文本一致。</summary>
     public static string ToJson(this CatalogContents contents)
     {
         CatalogDocument document = new()
@@ -26,15 +26,15 @@ public static class CatalogJson
                 .Select(model => new ModelDocument {
                     ModelName = model.ModelName.Value,
                     ProviderName = model.ProviderName.Value,
-ProviderModelName = model.ProviderModelName.Value,
-                    ContextLength = model.ContextLength.Value
+                    ProviderModelName = model.ProviderModelName.Value,
+                    ContextLength = model.ContextLength?.Value
                 })]
         };
 
         return JsonSerializer.Serialize(document, CatalogJsonContext.Default.CatalogDocument);
     }
 
-    /// <summary>解析 JSON 为目录内容。键名大小写不敏感，集合缺失或为 null 视为空集合，未知属性忽略。字段错误一次报全，字段全部合法后再校验集合自一致性。</summary>
+    /// <summary>解析 JSON 为目录内容。键名大小写不敏感，集合缺失或为 null 视为空集合，未知属性忽略，模型上下文缺失视为未知。字段错误一次报全，字段全部合法后再校验集合自一致性。</summary>
     public static ErrorOr<CatalogContents> Parse(string json)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -94,14 +94,28 @@ ProviderModelName = model.ProviderModelName.Value,
             ErrorOr<ModelName> modelName = ModelName.Create(item.ModelName ?? "");
             ErrorOr<ProviderName> providerName = ProviderName.Create(item.ProviderName ?? "");
             ErrorOr<ProviderModelName> providerModelName = ProviderModelName.Create(
-                            item.ProviderModelName ?? item.ModelName ?? "");
-            ErrorOr<ModelContextLength> contextLength = ModelContextLength.Create(item.ContextLength ?? 0);
+                item.ProviderModelName ?? item.ModelName ?? "");
+            ModelContextLength? contextLength = null;
+            bool contextLengthInvalid = false;
+            if (item.ContextLength is int rawContextLength)
+            {
+                ErrorOr<ModelContextLength> parsedContextLength = ModelContextLength.Create(rawContextLength);
+                AddErrors(parsedContextLength, errors);
+                if (parsedContextLength.IsError)
+                {
+                    contextLengthInvalid = true;
+                }
+                else
+                {
+                    contextLength = parsedContextLength.Value;
+                }
+            }
+
             AddErrors(modelName, errors);
             AddErrors(providerName, errors);
             AddErrors(providerModelName, errors);
-            AddErrors(contextLength, errors);
 
-            if (modelName.IsError || providerName.IsError || providerModelName.IsError || contextLength.IsError)
+            if (modelName.IsError || providerName.IsError || providerModelName.IsError || contextLengthInvalid)
             {
                 continue;
             }
@@ -110,7 +124,7 @@ ProviderModelName = model.ProviderModelName.Value,
                 modelName.Value,
                 providerName.Value,
                 providerModelName.Value,
-                contextLength.Value));
+                contextLength));
         }
 
         if (errors.Count > 0)

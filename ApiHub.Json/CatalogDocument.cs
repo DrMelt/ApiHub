@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace ApiHub.Json;
 
 /// <summary>目录内容的持久化结构与字段原文。</summary>
@@ -59,7 +61,8 @@ internal sealed record ModelDocument
         get; init;
     }
 
-    /// <summary>模型上下文窗口长度原文，缺失时视为非法。</summary>
+    /// <summary>模型上下文窗口长度原文，缺失或为 null 表示未知，导出时未知省略。</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? ContextLength
     {
         get; init;

@@ -49,6 +49,21 @@ public class ChatClientFactoryTests
         ModelContextLength? contextLength = client.GetService<ModelContextLength>();
 
         Assert.NotNull(contextLength);
-        Assert.Equal(8192, contextLength.Value);
+        Assert.Equal(8192, contextLength!.Value);
+    }
+
+    [Fact]
+    public void 连接无上下文时不提供模型上下文服务()
+    {
+        Catalog catalog = new(TestData.Contents(
+            [TestData.Provider("local", BaseAddress, "ollama")],
+            [TestData.Model("qwen3", "local", contextLength: null)]));
+
+        IChatClient client = catalog.FindModelConnection(TestData.ModelName("qwen3"))!.CreateChatClient();
+
+        ChatClientMetadata metadata = client.GetService<ChatClientMetadata>()!;
+
+        Assert.Equal("qwen3", metadata.DefaultModelId);
+        Assert.Null(client.GetService<ModelContextLength>());
     }
 }
