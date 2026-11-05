@@ -4,7 +4,7 @@ using ErrorOr;
 
 namespace ApiHub.Shared.Models;
 
-/// <summary>目录内容：提供商与模型集合。集合内自一致：名唯一，模型指向的提供商在集合中。成员不可变，交出后不被目录的后续变更影响。</summary>
+/// <summary>目录内容：提供商与模型集合。集合内自一致：提供商名唯一，本地模型名唯一，模型指向的提供商在集合中。成员不可变，交出后不被目录的后续变更影响。</summary>
 public sealed class CatalogContents {
     private CatalogContents(ImmutableArray<ProviderDefinition> providers, ImmutableArray<ModelDefinition> models) {
         Providers = providers;

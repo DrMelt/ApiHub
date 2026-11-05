@@ -57,6 +57,7 @@ public class CatalogTests {
 
         Assert.Equal("qwen-plus", connection.ModelName.Value);
         Assert.Equal("dashscope", connection.ProviderName.Value);
+        Assert.Equal("qwen-plus", connection.ProviderModelName.Value);
         Assert.Equal("https://example.com/v1", connection.BaseAddress.Address.ToString());
         Assert.Equal("sk-1", connection.ApiKey.Value);
         Assert.Equal(32768, connection.ContextLength.Value);
@@ -206,6 +207,21 @@ public class CatalogTests {
     }
 
     [Fact]
+    public void 同一提供商模型名可挂在多个提供商下() {
+        Catalog catalog = CatalogOf(
+            [
+                TestData.Provider("a", "https://example.com/a", "k1"),
+                TestData.Provider("b", "https://example.com/b", "k2")
+            ],
+            [TestData.Model("qwen-plus-a", "a", "qwen-plus")]);
+
+        Assert.False(catalog.AddModel(TestData.Model("qwen-plus-b", "b", "qwen-plus")).IsError);
+
+        Assert.Equal("qwen-plus", catalog.FindModel(TestData.ModelName("qwen-plus-a"))!.ProviderModelName.Value);
+        Assert.Equal("qwen-plus", catalog.FindModel(TestData.ModelName("qwen-plus-b"))!.ProviderModelName.Value);
+    }
+
+    [Fact]
     public void 模型名大小写不同视为新模型() {
         Catalog catalog = Sample();
 
@@ -322,8 +338,10 @@ public class CatalogTests {
                     .Then(endpoint => catalog.AddProvider(ProviderDefinition.Create(providerName, endpoint, key)))));
         ErrorOr<Success> registered = ProviderName.Create("dashscope")
             .Then(providerName => ModelName.Create("qwen-plus")
-                .Then(modelName => ModelContextLength.Create(32768)
-                    .Then(contextLength => catalog.AddModel(ModelDefinition.Create(modelName, providerName, contextLength)))));
+.Then(modelName => ProviderModelName.Create("qwen-plus")
+                    .Then(providerModelName => ModelContextLength.Create(32768)
+                        .Then(contextLength => catalog.AddModel(
+                            ModelDefinition.Create(modelName, providerName, providerModelName, contextLength))))));
 
         ModelDefinition? model = catalog.FindModel(TestData.ModelName("qwen-plus"));
         ProviderDefinition? provider = model is null ? null : catalog.FindProvider(model.ProviderName);

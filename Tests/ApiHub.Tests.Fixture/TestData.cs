@@ -16,6 +16,8 @@ public static class TestData {
 
     public static ModelName ModelName(string value) => Ok(Models.ModelName.Create(value));
 
+    public static ProviderModelName ProviderModelName(string value) => Ok(Models.ProviderModelName.Create(value));
+
     public static ApiKey Key(string value) => Ok(ApiKey.Create(value));
 
     public static ProviderEndpoint Endpoint(string value) => Ok(ProviderEndpoint.Create(value));
@@ -26,10 +28,18 @@ public static class TestData {
         string apiKey = "k") =>
         ProviderDefinition.Create(ProviderName(providerName), Endpoint(baseAddress), Key(apiKey));
 
-    public static ModelContextLength ContextLength(int value) => Ok(Models.ModelContextLength.Create(value));
+public static ModelContextLength ContextLength(int value) => Ok(Models.ModelContextLength.Create(value));
 
-    public static ModelDefinition Model(string modelName, string providerName = "dashscope", int contextLength = 32768) =>
-        ModelDefinition.Create(ModelName(modelName), ProviderName(providerName), ContextLength(contextLength));
+    public static ModelDefinition Model(
+        string modelName,
+        string providerName = "dashscope",
+        string? providerModelName = null,
+        int contextLength = 32768) =>
+        ModelDefinition.Create(
+            ModelName(modelName),
+            ProviderName(providerName),
+            ProviderModelName(providerModelName ?? modelName),
+            ContextLength(contextLength));
 
     public static CatalogContents Contents(ProviderDefinition[] providers, ModelDefinition[] models) =>
         Ok(CatalogContents.Create([.. providers], [.. models]));

@@ -24,10 +24,12 @@ Catalog rebuilt = new(contents);
     { "providerName": "dashscope", "baseAddress": "https://dashscope.aliyuncs.com/compatible-mode/v1", "apiKey": "sk-..." }
   ],
   "models": [
-    { "modelName": "qwen-plus", "providerName": "dashscope", "contextLength": 32768 }
+{ "modelName": "qwen-plus", "providerName": "dashscope", "providerModelName": "qwen-plus", "contextLength": 32768 }
   ]
 }
 ```
+
+`modelName` 是目录内的本地模型名，用于选择与引用，在目录内唯一；`providerModelName` 是请求提供商时使用的模型名。同一提供商模型名可以挂在多个提供商下，只要本地模型名不同。读取时缺少 `providerModelName` 则取 `modelName`，因此旧文件可直接使用。
 
 读取时键名大小写不敏感，集合缺失或为 null 视为空集合，列表项或字段为 null 视为非法，未知属性忽略，因此旧版本可读新增字段的文件。模型必须给出大于 0 的 `contextLength`，缺失或非法时拒绝。导出时提供商与模型按名序数排序，端点按 `Uri` 规范化，文本形式可能与输入不同。
 

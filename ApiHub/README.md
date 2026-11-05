@@ -20,8 +20,10 @@ ErrorOr<Success> added = ProviderName.Create("dashscope")
             .Then(endpoint => catalog.AddProvider(ProviderDefinition.Create(providerName, endpoint, key)))));
 ErrorOr<Success> registered = ProviderName.Create("dashscope")
     .Then(providerName => ModelName.Create("qwen-plus")
-        .Then(modelName => ModelContextLength.Create(32768)
-            .Then(contextLength => catalog.AddModel(ModelDefinition.Create(modelName, providerName, contextLength)))));
+.Then(modelName => ProviderModelName.Create("qwen-plus")
+            .Then(providerModelName => ModelContextLength.Create(32768)
+                .Then(contextLength => catalog.AddModel(
+                    ModelDefinition.Create(modelName, providerName, providerModelName, contextLength))))));
 
 ModelDefinition? model = catalog.FindModel(ModelName.Create("qwen-plus").Value); // Value 只在 IsError 为 false 时取用
 ProviderDefinition? provider = model is null ? null : catalog.FindProvider(model.ProviderName);

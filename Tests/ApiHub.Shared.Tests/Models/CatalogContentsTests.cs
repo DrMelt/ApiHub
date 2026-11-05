@@ -53,6 +53,19 @@ public class CatalogContentsTests {
     }
 
     [Fact]
+    public void 同一提供商模型名可挂在多个提供商下() {
+        ErrorOr<CatalogContents> result = CatalogContents.Create(
+            [TestData.Provider("dashscope"), TestData.Provider("aliyun")],
+            [
+                TestData.Model("qwen-plus", "dashscope", "qwen-plus"),
+                TestData.Model("qwen-plus-aliyun", "aliyun", "qwen-plus")
+            ]);
+
+        Assert.False(result.IsError);
+        Assert.Equal(2, result.Value.Models.Length);
+    }
+
+    [Fact]
     public void 模型名大小写不同不视为重复() {
         ErrorOr<CatalogContents> result = CatalogContents.Create(
             [TestData.Provider("dashscope")],

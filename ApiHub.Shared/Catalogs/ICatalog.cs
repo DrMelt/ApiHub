@@ -14,12 +14,12 @@ public interface ICatalog : IReadOnlyCatalog {
     /// <summary>删除提供商。仍被模型引用时拒绝，避免留下悬空引用。</summary>
     ErrorOr<Success> RemoveProvider(ProviderName providerName);
 
-    /// <summary>新增模型。模型名已存在或提供商不在目录中时拒绝。</summary>
+    /// <summary>新增模型。本地模型名已存在或提供商不在目录中时拒绝。</summary>
     ErrorOr<Success> AddModel(ModelDefinition model);
 
-    /// <summary>替换模型。模型名或新指向的提供商不存在时拒绝。</summary>
+    /// <summary>替换模型。本地模型名或新指向的提供商不存在时拒绝。</summary>
     ErrorOr<Success> ReplaceModel(ModelDefinition model);
 
-    /// <summary>删除模型。模型名不存在时拒绝。</summary>
+    /// <summary>删除模型。本地模型名不存在时拒绝。</summary>
     ErrorOr<Success> RemoveModel(ModelName modelName);
 }

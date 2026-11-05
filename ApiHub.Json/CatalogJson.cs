@@ -23,6 +23,7 @@ public static class CatalogJson {
                 .Select(model => new ModelDocument {
                     ModelName = model.ModelName.Value,
                     ProviderName = model.ProviderName.Value,
+ProviderModelName = model.ProviderModelName.Value,
                     ContextLength = model.ContextLength.Value
                 })]
         };
@@ -79,16 +80,23 @@ public static class CatalogJson {
 
             ErrorOr<ModelName> modelName = ModelName.Create(item.ModelName ?? "");
             ErrorOr<ProviderName> providerName = ProviderName.Create(item.ProviderName ?? "");
+ErrorOr<ProviderModelName> providerModelName = ProviderModelName.Create(
+                item.ProviderModelName ?? item.ModelName ?? "");
             ErrorOr<ModelContextLength> contextLength = ModelContextLength.Create(item.ContextLength ?? 0);
             AddErrors(modelName, errors);
             AddErrors(providerName, errors);
+            AddErrors(providerModelName, errors);
             AddErrors(contextLength, errors);
 
-            if (modelName.IsError || providerName.IsError || contextLength.IsError) {
+            if (modelName.IsError || providerName.IsError || providerModelName.IsError || contextLength.IsError) {
                 continue;
             }
 
-            models.Add(ModelDefinition.Create(modelName.Value, providerName.Value, contextLength.Value));
+            models.Add(ModelDefinition.Create(
+                modelName.Value,
+                providerName.Value,
+                providerModelName.Value,
+                contextLength.Value));
         }
 
         if (errors.Count > 0) {
